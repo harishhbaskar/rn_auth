@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
-
+import { EyeIcon, EyeOffIcon } from './Icons';
 interface CustomInputProps {
-  icon: string;       
+  icon: React.ReactNode;       
   placeholder : string;    
   isPassword : boolean;
   value : string;
@@ -29,7 +29,7 @@ const CustomInput = ({ icon, placeholder, isPassword ,value , setValue}:CustomIn
       
       {isPassword && (
         <TouchableOpacity onPress={() => setSecureText(!secureText)}>
-          <Text style={styles.eyeIcon}>{secureText ? "👁️" : "🚫"}</Text>
+          {secureText ? <EyeIcon size={20} /> : <EyeOffIcon size={20} />}
         </TouchableOpacity>
       )}
     </View>

@@ -3,6 +3,7 @@ import {View , Text  , StyleSheet , TextInput ,Pressable ,TouchableOpacity,Scrol
 import CustomInput from "../components/CustomInput";
 import CustomButton from "../components/CustomButton";
 import AuthFooter from "../components/AuthFooter";
+import { UserIcon, MailIcon, LockIcon, ArrowLeftIcon } from "../components/Icons";
 
 
 const SignupScreen = ({navigation }:any ) => {
@@ -19,7 +20,7 @@ const SignupScreen = ({navigation }:any ) => {
         <ScrollView contentContainerStyle={styles.container}>
             <View style={[styles.header, {marginBottom : 60}]}>
                 <TouchableOpacity onPress={() => navigation.goBack()}>
-                    <Text style={styles.backArrow}>{"<"}</Text> 
+                    <ArrowLeftIcon />
                 </TouchableOpacity>
             </View>
 
@@ -27,10 +28,10 @@ const SignupScreen = ({navigation }:any ) => {
             <Text style = {styles.subtitle}>Create a new acccount to get started and enjoy seamless access to our features</Text>
             <View style = {styles.form}>
                 {/* inputs*/}
-                <CustomInput icon="🙍🏻" placeholder="Name" isPassword={false} value={name} setValue={setName}/>
-                <CustomInput icon="✉️" placeholder="Email Address" isPassword={false} value = {email} setValue={setEmail}/>
-                <CustomInput icon="🔒" placeholder="Password" isPassword={true} value={password} setValue={setPassword}/>
-                <CustomInput icon="🔒" placeholder="Confirm Password" isPassword={true} value={confirmPassword} setValue={setConfirmPassword}/>
+                <CustomInput icon={<UserIcon />} placeholder="Name" isPassword={false} value={name} setValue={setName}/>
+                <CustomInput icon={<MailIcon />} placeholder="Email Address" isPassword={false} value = {email} setValue={setEmail}/>
+                <CustomInput icon={<LockIcon/>} placeholder="Password" isPassword={true} value={password} setValue={setPassword}/>
+                <CustomInput icon={<LockIcon/>} placeholder="Confirm Password" isPassword={true} value={confirmPassword} setValue={setConfirmPassword}/>
 
                
 
@@ -59,10 +60,6 @@ export const styles = StyleSheet.create({
     header: {
         marginBottom: 20,
         marginTop: 20,
-    },
-    backArrow: {
-        fontSize: 24,
-        color: '#333',
     },
     subtitle: {
         fontSize:14,

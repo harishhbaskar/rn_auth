@@ -3,6 +3,8 @@ import {View , Text  , StyleSheet , TextInput ,Pressable ,TouchableOpacity,Scrol
 import CustomInput from "../components/CustomInput";
 import CustomButton from "../components/CustomButton";
 import AuthFooter from "../components/AuthFooter";
+import { UserIcon, MailIcon, LockIcon, ArrowLeftIcon } from "../components/Icons";
+
 
 
 const LoginScreen = ({navigation }: any) => {
@@ -24,8 +26,8 @@ const LoginScreen = ({navigation }: any) => {
             <Text style = {styles.subtitle}>Enter your email and password to securely access your account and manage your services</Text>
             <View style = {styles.form}>
                 {/* inputs*/}
-                <CustomInput icon="✉️" placeholder="Email Address" isPassword={false} value={email} setValue={setEmail} />
-                <CustomInput icon="🔒" placeholder="Password" isPassword={true} value={password} setValue={setPassword}/>
+                <CustomInput icon={<MailIcon/>} placeholder="Email Address" isPassword={false} value={email} setValue={setEmail} />
+                <CustomInput icon={<LockIcon/>} placeholder="Password" isPassword={true} value={password} setValue={setPassword}/>
 
                 {/*checkbox*/}
                 <View style={styles.row}>
