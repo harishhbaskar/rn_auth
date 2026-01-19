@@ -1,15 +1,22 @@
 import React , {useState}from "react"
 import {View , Text  , StyleSheet , TextInput ,Pressable ,TouchableOpacity,ScrollView} from "react-native"
+import CustomInput from "../components/CustomInput";
+import CustomButton from "../components/CustomButton";
+import AuthFooter from "../components/AuthFooter";
 
 
-
-const LoginScreen = () => {
+const LoginScreen = ({navigation }: any) => {
     const [isChecked, setIsChecked] = useState(false);
-    const [secureText, setSecureText] = useState(true);
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+
+    const handleLogin = () => {
+        navigation.navigate('Welcome', { email: email });
+    };
 
     return (
         <ScrollView contentContainerStyle={styles.container}>
-            <View style={styles.header}>
+            <View style={[styles.header, {marginBottom : 60}]}>
                  <Text style={styles.backArrow}>{"<"}</Text> 
             </View>
 
@@ -17,26 +24,9 @@ const LoginScreen = () => {
             <Text style = {styles.subtitle}>Enter your email and password to securely access your account and manage your services</Text>
             <View style = {styles.form}>
                 {/* inputs*/}
-                <View style={styles.inputContainer}>
-                    <Text style={styles.iconPlaceholder}>✉️</Text>
-                    <TextInput
-                        style={styles.input}
-                        placeholder="Email address"
-                        placeholderTextColor="#999"
-                    />
-                </View>
-                <View style={styles.inputContainer}>
-                    <Text style={styles.iconPlaceholder}>🔒</Text>
-                    <TextInput
-                        style={styles.input}
-                        placeholder="Password"
-                        placeholderTextColor="#999"
-                        secureTextEntry={secureText}
-                    />
-                    <TouchableOpacity onPress={() => setSecureText(!secureText)}>
-                        <Text style={styles.eyeIcon}>{secureText ? "👁️" : "🚫"}</Text>
-                    </TouchableOpacity>
-                </View>
+                <CustomInput icon="✉️" placeholder="Email Address" isPassword={false} value={email} setValue={setEmail} />
+                <CustomInput icon="🔒" placeholder="Password" isPassword={true} value={password} setValue={setPassword}/>
+
                 {/*checkbox*/}
                 <View style={styles.row}>
                     <Pressable 
@@ -51,25 +41,14 @@ const LoginScreen = () => {
                     </TouchableOpacity>
                 </View>
 
-                 <TouchableOpacity style={styles.loginButton}>
-                    <Text style={styles.loginButtonText}>Login</Text>
-                </TouchableOpacity>
+                <CustomButton title="Login" onPress={handleLogin} />
 
-                <View style={styles.signupRow}>
-                    <Text style={styles.text}>Don't have an account? </Text>
-                    <TouchableOpacity>
-                        <Text style={styles.signupText}>Sign Up here</Text>
-                    </TouchableOpacity>
-                </View>
-
-                <View style={styles.divider} />
-
-                <Text style={[styles.text , {textAlign : 'center'},{marginBottom : 20}]}>Or create an account with</Text>
-                <View style={styles.socialRow}>
-                    <TouchableOpacity style={styles.socialBtn}><Text>f</Text></TouchableOpacity>
-                    <TouchableOpacity style={styles.socialBtn}><Text>G</Text></TouchableOpacity>
-                    <TouchableOpacity style={styles.socialBtn}><Text></Text></TouchableOpacity>
-                </View>
+                <AuthFooter 
+                    message="Dont have an account?"
+                    actionText="Sign Up here"
+                    onActionPress={() => navigation.navigate('Signup')}
+                 />
+                
 
             </View>
 
@@ -78,7 +57,7 @@ const LoginScreen = () => {
 
     }
 
-const styles = StyleSheet.create({
+export const styles = StyleSheet.create({
     container : {
             flexGrow : 1,
             padding: 24,
@@ -111,31 +90,7 @@ const styles = StyleSheet.create({
         width: '100%',
     },
     
-    inputContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        backgroundColor: '#fff',
-        borderRadius: 50, 
-        borderWidth: 1,
-        borderColor: '#E5E7EB',
-        height: 56,
-        paddingHorizontal: 16,
-        marginBottom: 16,
-        elevation: 1,
-    },
-    iconPlaceholder: {
-        fontSize: 18,
-        marginRight: 10,
-    },
-    input: {
-        flex: 1, 
-        height: '100%',
-        color: '#333',
-    },
-    eyeIcon: {
-        fontSize: 18,
-        padding: 4,
-    },
+    
     row: {
         flexDirection: 'row',
         justifyContent: 'space-between',
@@ -168,57 +123,7 @@ const styles = StyleSheet.create({
         color: '#111',
         fontSize: 14,
     },
-    loginButton: {
-        backgroundColor: '#2D8C5F', 
-        height: 56,
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginBottom: 20,
-        shadowColor: "#2D8C5F",
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.3,
-        shadowRadius: 8,
-        elevation: 4,
-    },
-    loginButtonText: {
-        color: '#fff',
-        fontSize: 16,
-        fontWeight: 'bold',
-    },
-    signupRow: {
-        flexDirection: 'row',
-        justifyContent: 'center',
-        marginBottom: 40,
-    },
-    text: {
-        color: '#6B7280',
-    },
-    signupText: {
-        color: '#2D8C5F',
-        fontWeight: 'bold',
-    },
-    socialRow: {
-        flexDirection: 'row',
-        justifyContent: 'center',
-        gap: 20,
-    },
-    socialBtn: {
-        width: 50,
-        height: 50,
-        borderRadius: 25,
-        backgroundColor: '#fff',
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderWidth: 1,
-        borderColor: '#E5E7EB',
-    },
-    divider: {
-      height: 1,
-      backgroundColor: '#ddd',
-      width: '100%',
-      marginBottom:20,
-    }
-
+    
 });
 
 
