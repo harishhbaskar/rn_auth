@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
 import { EyeIcon, EyeOffIcon } from './Icons';
-
+import { Colors } from '../styles/globalStyles';
 
 const CustomInput = ({ icon, placeholder, isPassword ,value , setValue}) => {
   
@@ -34,10 +34,10 @@ const styles = StyleSheet.create({
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#fff',
+    backgroundColor: Colors.white,
     borderRadius: 50,
     borderWidth: 1,
-    borderColor: '#E5E7EB',
+    borderColor: Colors.border,
     height: 56,
     paddingHorizontal: 16,
     marginBottom: 16,

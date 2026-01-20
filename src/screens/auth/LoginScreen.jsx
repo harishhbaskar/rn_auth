@@ -1,10 +1,11 @@
 import React , {useState}from "react"
 import { SafeAreaView } from "react-native-safe-area-context";
-import {View , Text  , StyleSheet , TextInput ,Pressable ,TouchableOpacity,ScrollView} from "react-native"
-import CustomInput from "../components/CustomInput";
-import CustomButton from "../components/CustomButton";
-import AuthFooter from "../components/AuthFooter";
-import { UserIcon, MailIcon, LockIcon, ArrowLeftIcon } from "../components/Icons";
+import {View , Text  , StyleSheet ,Pressable ,TouchableOpacity,ScrollView } from "react-native"
+import {globalStyles , Colors} from "../../styles/globalStyles"
+import CustomInput from "../../components/CustomInput";
+import CustomButton from "../../components/CustomButton";
+import AuthFooter from "../../components/AuthFooter";
+import {MailIcon, LockIcon, ArrowLeftIcon } from "../../components/Icons";
 
 
 
@@ -14,12 +15,15 @@ const LoginScreen = ({navigation }) => {
     const [password, setPassword] = useState('');
 
     const handleLogin = () => {
-        navigation.navigate('Welcome', { email: email });
+        navigation.reset({
+        index: 0,
+        routes: [{ name: 'MainApp' }],
+    });
     };
 
     const renderHeader = () => {
         return (
-            <View style={[styles.header, {marginBottom : 60}]}>
+            <View style={globalStyles.header}>
                 <TouchableOpacity>
                     <ArrowLeftIcon/>
                 </TouchableOpacity>
@@ -32,9 +36,9 @@ const LoginScreen = ({navigation }) => {
     const renderContent = () => {
         return (
             <View>
-                <Text style={styles.label}>Log in</Text>
-                <Text style={styles.subtitle}>Enter your email and password to securely access your account and manage your services</Text>
-                <View style={styles.form}>
+                <Text style={globalStyles.title}>Log in</Text>
+                <Text style={globalStyles.subtitle}>Enter your email and password to securely access your account and manage your services</Text>
+                <View style={globalStyles.form}>
                     {/* inputs*/}
                     <CustomInput icon={<MailIcon />} placeholder="Email Address" isPassword={false} value={email} setValue={setEmail} />
                     <CustomInput icon={<LockIcon />} placeholder="Password" isPassword={true} value={password} setValue={setPassword} />
@@ -70,8 +74,8 @@ const LoginScreen = ({navigation }) => {
         )
     }
     return (
-        <SafeAreaView style={styles.safeArea} edges={["top","left","right"]}>
-            <ScrollView contentContainerStyle={styles.container}>
+        <SafeAreaView style={globalStyles.safeArea} edges={["top","left","right"]}>
+            <ScrollView contentContainerStyle={globalStyles.container}>
                 {renderHeader()}
                 {renderContent()}
                 {renderFooter()}
@@ -81,40 +85,7 @@ const LoginScreen = ({navigation }) => {
 
     }
 
-export const styles = StyleSheet.create({
-    safeArea:{
-        flex: 1,
-        backgroundColor: '#F9FAFB'
-    },
-    container : {
-            flexGrow : 1,
-            padding: 24,
-            backgroundColor: '#F9FAFB',
-    },
-    header: {
-        marginBottom: 20,
-        marginTop: 20,
-    },
-    subtitle: {
-        fontSize:14,
-        color: '#6B7280',
-        textAlign: 'center',
-        marginBottom: 30,
-        lineHeight: 20,
-    },
-    label : {
-        fontSize: 28,
-        fontWeight: 'bold',
-        color: '#111',
-        marginBottom: 8,
-        textAlign: 'center',
-
-    },
-    form: {
-        width: '100%',
-    },
-    
-    
+export const styles = StyleSheet.create({    
     row: {
         flexDirection: 'row',
         justifyContent: 'space-between',
@@ -129,14 +100,14 @@ export const styles = StyleSheet.create({
         width: 20,
         height: 20,
         borderWidth: 1,
-        borderColor: '#D1D5DB',
+        borderColor: Colors.border,
         borderRadius: 4,
         marginRight: 8,
-        backgroundColor: '#fff',
+        backgroundColor: Colors.white,
     },
     checkboxChecked: {
-        backgroundColor: '#2D8C5F', 
-        borderColor: '#2D8C5F',
+        backgroundColor: Colors.primary, 
+        borderColor: Colors.primary,
     },
     rememberText: {
         color: '#374151',
@@ -144,7 +115,7 @@ export const styles = StyleSheet.create({
     },
     forgot: {
         fontWeight: '600',
-        color: '#111',
+        color: Colors.textPrimary,
         fontSize: 14,
     },
     

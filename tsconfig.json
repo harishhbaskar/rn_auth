@@ -3,6 +3,6 @@
   "compilerOptions": {
     "types": ["jest"],
   },
-  "include": ["**/*.ts", "**/*.tsx", "src/components/CustomButton.jsx", "src/components/AuthFooter.jsx", "src/components/Icons.jsx", "src/components/CustomInput.jsx", "src/screens/WelcomeScreen.jsx", "src/screens/SignupScreen.jsx", "src/screens/loginScreen.jsx", "App.jsx"],
+  "include": ["**/*.ts", "**/*.tsx", "src/components/CustomButton.jsx", "src/components/AuthFooter.jsx", "src/components/Icons.jsx", "src/components/CustomInput.jsx", "src/screens/auth/WelcomeScreen.jsx", "src/screens/auth/SignupScreen.jsx", "src/screens/auth/LoginScreen.jsx", "App.jsx"],
   "exclude": ["**/node_modules", "**/Pods"]
 }

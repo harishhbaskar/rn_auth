@@ -1,6 +1,6 @@
 import React from 'react';
 import { TouchableOpacity, Text, StyleSheet } from 'react-native';
-
+import { Colors } from '../styles/globalStyles';
 
 
 const CustomButton = ({ title, onPress }) => {
@@ -13,23 +13,23 @@ const CustomButton = ({ title, onPress }) => {
 
 const styles = StyleSheet.create({
   loginButton: {
-    backgroundColor: '#2D8C5F', 
+    backgroundColor: Colors.primary, 
     borderRadius: 50,
     height: 56,
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: 20,
     marginBottom: 20,
-    shadowColor: "#2D8C5F",
+    shadowColor: Colors.primary,
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 8,
     elevation: 4,
   },
   loginButtonText: {
-    color: '#fff',
+    color: Colors.white,
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: '600',
   },
 });
 

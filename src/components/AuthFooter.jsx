@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-
+import { Colors } from '../styles/globalStyles';
 
 const AuthFooter = ({ message, actionText, onActionPress }) => {
   return (
@@ -45,17 +45,17 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   text: {
-    color: '#6B7280',
+    color: Colors.textSecondary,
     fontSize: 14,
   },
   switchText: {
-    color: '#2D8C5F', // The Green Color
-    fontWeight: 'bold',
+    color: Colors.primary,
+    fontWeight: '600',
     fontSize: 14,
   },
   divider: {
     height: 1,
-    backgroundColor: '#E5E7EB',
+    backgroundColor: Colors.border,
     width: '100%',
     marginBottom: 20,
   },
@@ -74,11 +74,11 @@ const styles = StyleSheet.create({
     width: 50,
     height: 50,
     borderRadius: 25,
-    backgroundColor: '#fff',
+    backgroundColor: Colors.white,
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: '#E5E7EB',
+    borderColor: Colors.border,
     // Slight shadow
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
@@ -88,8 +88,8 @@ const styles = StyleSheet.create({
   },
   socialIcon: {
     fontSize: 18,
-    fontWeight: 'bold',
-    color: '#333',
+    fontWeight: '600',
+    color: Colors.textPrimary,
   }
 });
 

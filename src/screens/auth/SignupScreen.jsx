@@ -1,9 +1,13 @@
 import React , {useState}from "react"
-import {View , Text  , StyleSheet , TextInput ,Pressable ,TouchableOpacity,ScrollView} from "react-native"
-import CustomInput from "../components/CustomInput";
-import CustomButton from "../components/CustomButton";
-import AuthFooter from "../components/AuthFooter";
-import { UserIcon, MailIcon, LockIcon, ArrowLeftIcon } from "../components/Icons";
+import { SafeAreaView } from "react-native-safe-area-context";
+import {View , Text ,TouchableOpacity,ScrollView } from "react-native"
+import CustomInput from "../../components/CustomInput";
+import CustomButton from "../../components/CustomButton";
+import AuthFooter from "../../components/AuthFooter";
+import { UserIcon, MailIcon, LockIcon, ArrowLeftIcon } from "../../components/Icons";
+import { globalStyles } from "../../styles/globalStyles";
+
+
 
 
 const SignupScreen = ({navigation }) => {
@@ -18,7 +22,7 @@ const SignupScreen = ({navigation }) => {
 
     const renderHeader = () => {
         return(
-            <View style={[styles.header, {marginBottom : 60}]}>
+            <View style={globalStyles.header}>
                 <TouchableOpacity onPress={() => navigation.goBack()}>
                     <ArrowLeftIcon />
                 </TouchableOpacity>
@@ -28,10 +32,10 @@ const SignupScreen = ({navigation }) => {
 
     const renderContent = () => {
         return(
-            <View>
-            <Text style = {styles.label}>Create Account</Text>
-            <Text style = {styles.subtitle}>Create a new acccount to get started and enjoy seamless access to our features</Text>
-            <View style = {styles.form}>
+            <View >
+            <Text style = {globalStyles.title}>Create Account</Text>
+            <Text style = {globalStyles.subtitle}>Create a new acccount to get started and enjoy seamless access to our features</Text>
+            <View style = {globalStyles.form}>
                 {/* inputs*/}
                 <CustomInput icon={<UserIcon />} placeholder="Name" isPassword={false} value={name} setValue={setName}/>
                 <CustomInput icon={<MailIcon />} placeholder="Email Address" isPassword={false} value = {email} setValue={setEmail}/>
@@ -51,54 +55,20 @@ const SignupScreen = ({navigation }) => {
                     message="Already have an account ?"
                     actionText="Sign in here"
                     onActionPress={() => navigation.navigate("Login")}
-
             />
         )
     }
 
     return (
-        <ScrollView contentContainerStyle={styles.container}>
+        <SafeAreaView style={globalStyles.safeArea}>
+        <ScrollView contentContainerStyle={globalStyles.container}>
             {renderHeader()}
             {renderContent()}
             {renderFooter()}
-        </ScrollView>     
+        </ScrollView>  
+        </SafeAreaView>   
     )
-
     }
-
-export const styles = StyleSheet.create({
-    container : {
-            flexGrow : 1,
-            padding: 24,
-            backgroundColor: '#F9FAFB',
-    },
-    header: {
-        marginBottom: 20,
-        marginTop: 20,
-    },
-    subtitle: {
-        fontSize:14,
-        color: '#6B7280',
-        textAlign: 'center',
-        marginBottom: 30,
-        lineHeight: 20,
-    },
-    label : {
-        fontSize: 28,
-        fontWeight: 'bold',
-        color: '#111',
-        marginBottom: 8,
-        textAlign: 'center',
-
-    },
-    form: {
-        width: '100%',
-    },
-    
-    
-    
-
-});
 
 
 

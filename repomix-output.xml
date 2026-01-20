@@ -104,28 +104,58 @@ ios/
   Podfile
 src/
   assets/
-    fonts
+    fonts/
+      Poppins-Black.ttf
+      Poppins-BlackItalic.ttf
+      Poppins-Bold.ttf
+      Poppins-BoldItalic.ttf
+      Poppins-ExtraBold.ttf
+      Poppins-ExtraBoldItalic.ttf
+      Poppins-ExtraLight.ttf
+      Poppins-ExtraLightItalic.ttf
+      Poppins-Italic.ttf
+      Poppins-Light.ttf
+      Poppins-LightItalic.ttf
+      Poppins-Medium.ttf
+      Poppins-MediumItalic.ttf
+      Poppins-Regular.ttf
+      Poppins-SemiBold.ttf
+      Poppins-SemiBoldItalic.ttf
+      Poppins-Thin.ttf
+      Poppins-ThinItalic.ttf
   components/
+    common/
+      Card.jsx
+      Header.jsx
+      IconButton.jsx
+      ScreenWrapper.jsx
     AuthFooter.jsx
     CustomButton.jsx
     CustomInput.jsx
     Icons.jsx
+  navigation/
+    AppNavigator.jsx
   screens/
-    loginScreen.jsx
-    SignupScreen.jsx
-    WelcomeScreen.jsx
+    auth/
+      LoginScreen.jsx
+      SignupScreen.jsx
+    home/
+      HomeScreen.jsx
+  styles/
+    globalStyles.js
 .eslintrc.js
 .gitignore
 .prettierrc.js
 .watchmanconfig
 app.json
-App.tsx
+App.jsx
 babel.config.js
 Gemfile
 index.js
 jest.config.js
 metro.config.js
 package.json
+react-native.config.js
 README.md
 tsconfig.json
 </directory_structure>
@@ -133,275 +163,294 @@ tsconfig.json
 <files>
 This section contains the contents of the repository's files.
 
-<file path="src/assets/fonts">
+<file path="src/components/common/Card.jsx">
+import React from 'react';
+import { View, StyleSheet } from 'react-native';
+import { Colors, globalStyles, Spacing } from '../../styles/globalStyles';
 
+const Card = ({ children, style }) => {
+  return (
+    <View style={[styles.card, globalStyles.shadow, style]}>
+      {children}
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  card: {
+    backgroundColor: Colors.white,
+    borderRadius: 24,           
+    padding: Spacing.m,         
+    marginBottom: Spacing.m,    
+    overflow: 'hidden',     // Ensures child content doesn't bleed out
+  },
+});
+
+export default Card;
 </file>
 
-<file path="src/components/AuthFooter.jsx">
+<file path="src/components/common/Header.jsx">
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { ArrowLeftIcon } from '../Icons'; // Import from your wrapper now
+import Icon from 'react-native-vector-icons/Feather';
+import IconButton from './IconButton';
+import { Colors, globalStyles } from '../../styles/globalStyles';
 
+const Header = ({ title, showLogo = false, showBack = false, rightComponent }) => {
+    const navigation = useNavigation();
 
-const AuthFooter = ({ message, actionText, onActionPress }) => {
+    return (
+        <View style={styles.container}>
+
+            {/* left */}
+            <View style={styles.leftContainer}>
+                {showBack && (
+                    <IconButton
+                        icon={<ArrowLeftIcon size={22} color={Colors.textPrimary} />}
+                        onPress={() => navigation.goBack()}
+                    />
+                )}
+                {showLogo && (
+                    <View style={styles.logoRow}>
+                        {/* Placeholder Logo Icon */}
+                        <Icon name="aperture" size={28} color={Colors.primary} />
+                    </View>
+                )}
+            </View>
+
+            {/*center*/}
+            <View style={styles.centerContainer}>
+                {title && <Text style={styles.title}>{title}</Text>}
+            </View>
+
+            {/*right*/}
+            <View style={styles.rightContainer}>
+                {rightComponent}
+            </View>
+
+        </View>
+    );
+};
+
+const styles = StyleSheet.create({
+    container: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        paddingBottom: 24, // Spacing between header and content
+        //no horizontal spacing , as the wrapper handles it
+    },
+    leftContainer: {
+        flex: 1, // Takes up 1/3 space
+        alignItems: 'flex-start',
+    },
+    centerContainer: {
+        flex: 2, // Takes up more space for long titles
+        alignItems: 'center',
+    },
+    rightContainer: {
+        flex: 1, // Takes up 1/3 space
+        flexDirection: 'row',
+        justifyContent: 'flex-end',
+        gap: 12, // Space between multiple right icons
+        alignItems: 'center',
+    },
+    logoRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 8,
+    },
+    title: {
+        fontSize: 18,
+        fontWeight: '700',
+        color: Colors.textPrimary,
+    },
+    logoText: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        color: Colors.primary
+    }
+});
+
+export default Header;
+</file>
+
+<file path="src/components/common/IconButton.jsx">
+import React from "react";
+import { TouchableOpacity , StyleSheet} from "react-native";
+import { globalStyles , Colors } from "../../styles/globalStyles";
+
+const IconButton = ({onPress , icon , style}) => {
+    return(
+        <TouchableOpacity 
+            onPress={onPress}
+            style={[styles.button , globalStyles.shadow , style]}
+            activeOpacity={0.8}
+        >
+            {icon}
+        </TouchableOpacity>
+    )
+
+}
+
+const styles = StyleSheet.create({
+    button :{
+        width : 44,
+        height : 44,
+        borderRadius : 22,
+        backgroundColor : Colors.white,
+        justifyContent : 'center' ,
+        alignItems : 'center'
+    },
+})
+
+export default IconButton
+</file>
+
+<file path="src/components/common/ScreenWrapper.jsx">
+import React from 'react';
+import { View, StyleSheet, StatusBar } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { globalStyles ,Colors, Spacing } from '../../styles/globalStyles';
+
+const ScreenWrapper = ({ children, style, noPadding = false }) => {
   return (
-    <View style={styles.container}>
-      {/* 1. Switch Account Link */}
-      <View style={styles.switchRow}>
-        <Text style={styles.text}>{message} </Text>
-        <TouchableOpacity onPress={onActionPress}>
-          <Text style={styles.switchText}>{actionText}</Text>
-        </TouchableOpacity>
-      </View>
+    <SafeAreaView style={globalStyles.safeArea}>
 
-      {/* 2. Divider */}
-      <View style={styles.divider} />
-
-      {/* 3. Social Section */}
-      <Text style={styles.orText}>Or Continue With Account</Text>
-      
-      <View style={styles.socialRow}>
-        <TouchableOpacity style={styles.socialBtn}>
-           <Text style={styles.socialIcon}>f</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.socialBtn}>
-           <Text style={styles.socialIcon}>G</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.socialBtn}>
-           <Text style={styles.socialIcon}></Text>
-        </TouchableOpacity>
+      <StatusBar barStyle="dark-content" backgroundColor={Colors.background} />
+      <View style={[
+        styles.container, 
+        noPadding ? { padding: 0 } : { padding: Spacing.l }, 
+        style
+      ]}>
+        {children}
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 20,
-    width: '100%',
+    flex: 1, 
   },
-  switchRow: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    marginBottom: 20,
-  },
-  text: {
-    color: '#6B7280',
-    fontSize: 14,
-  },
-  switchText: {
-    color: '#2D8C5F', // The Green Color
-    fontWeight: 'bold',
-    fontSize: 14,
-  },
-  divider: {
-    height: 1,
-    backgroundColor: '#E5E7EB',
-    width: '100%',
-    marginBottom: 20,
-  },
-  orText: {
-    textAlign: 'center',
-    color: '#9CA3AF',
-    marginBottom: 20,
-    fontSize: 12,
-  },
-  socialRow: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    gap: 20,
-  },
-  socialBtn: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    backgroundColor: '#fff',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: '#E5E7EB',
-    // Slight shadow
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
-    shadowRadius: 2,
-    elevation: 2,
-  },
-  socialIcon: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#333',
-  }
 });
 
-export default AuthFooter;
+export default ScreenWrapper;
 </file>
 
-<file path="src/components/CustomButton.jsx">
+<file path="src/navigation/AppNavigator.jsx">
 import React from 'react';
-import { TouchableOpacity, Text, StyleSheet } from 'react-native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { View } from 'react-native';
+import Icon from 'react-native-vector-icons/Feather';
+import { Colors } from '../styles/globalStyles';
+
+import LoginScreen from '../screens/auth/LoginScreen';
+import SignupScreen from '../screens/auth/SignupScreen';
+
+import HomeScreen from '../screens/home/HomeScreen'; 
+
+const Placeholder = () => <View style={{flex:1, backgroundColor: Colors.background}} />;
+
+const Stack = createNativeStackNavigator();
+const Tab = createBottomTabNavigator();
 
 
-
-const CustomButton = ({ title, onPress }) => {
+function HomeTabs() {
   return (
-    <TouchableOpacity style={styles.loginButton} onPress={onPress}>
-      <Text style={styles.loginButtonText}>{title}</Text>
-    </TouchableOpacity>
-  );
-};
-
-const styles = StyleSheet.create({
-  loginButton: {
-    backgroundColor: '#2D8C5F', 
-    borderRadius: 50,
-    height: 56,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: 20,
-    marginBottom: 20,
-    shadowColor: "#2D8C5F",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-    elevation: 4,
-  },
-  loginButtonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-});
-
-export default CustomButton;
-</file>
-
-<file path="src/components/CustomInput.jsx">
-import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
-import { EyeIcon, EyeOffIcon } from './Icons';
-
-
-const CustomInput = ({ icon, placeholder, isPassword ,value , setValue}) => {
-  
-  const [secureText, setSecureText] = useState(isPassword);
-
-  return (
-    <View style={styles.inputContainer}>
-      <Text style={styles.iconPlaceholder}>{icon}</Text>
+    <Tab.Navigator
+      screenOptions={{
+        headerShown: false,
+        tabBarStyle: { 
+            position: 'absolute', 
+            bottom: 20, 
+            left: 20, 
+            right: 20, 
+            borderRadius: 30, 
+            height: 70, 
+            elevation: 5, 
+            backgroundColor: Colors.white,
+            borderTopWidth: 0,
+            paddingBottom: 0,
+            paddingTop :15,
+            alignItems: 'center',
+        },
+        tabBarShowLabel: false,
+        tabBarActiveTintColor: Colors.primary,
+        tabBarInactiveTintColor: Colors.textSecondary,
+      }}
+    >
+      <Tab.Screen 
+        name="Dashboard" 
+        component={HomeScreen} 
+        options={{ tabBarIcon: ({color}) => <Icon name="home" size={24} color={color} /> }}
+      />
       
-      <TextInput
-        style={styles.input}
-        placeholder={placeholder}
-        placeholderTextColor="#999"
-        secureTextEntry={secureText}
-        value={value}
-        onChangeText={setValue}
+      <Tab.Screen 
+        name="Search" 
+        component={Placeholder} 
+        options={{ tabBarIcon: ({color}) => <Icon name="search" size={24} color={color} /> }}
       />
 
-      
-      {isPassword && (
-        <TouchableOpacity onPress={() => setSecureText(!secureText)}>
-          {secureText ? <EyeIcon size={20} /> : <EyeOffIcon size={20} />}
-        </TouchableOpacity>
-      )}
-    </View>
+      <Tab.Screen 
+        name="Add" 
+        component={Placeholder} 
+        options={{ 
+            tabBarIcon: () => (
+                <View style={{ 
+                    backgroundColor: Colors.primary, 
+                    width: 50, height: 50, borderRadius: 25, 
+                    alignItems: 'center', justifyContent: 'center',
+                    marginBottom: 0, elevation: 5 
+                }}>
+                    <Icon name="plus" size={24} color="#fff" />
+                </View>
+            )
+        }}
+      />
+
+      <Tab.Screen 
+        name="Schedule" 
+        component={Placeholder} 
+        options={{ tabBarIcon: ({color}) => <Icon name="clock" size={24} color={color} /> }}
+      />
+
+      <Tab.Screen 
+        name="Energy" 
+        component={Placeholder} 
+        options={{ tabBarIcon: ({color}) => <Icon name="pie-chart" size={24} color={color} /> }}
+      />
+    </Tab.Navigator>
   );
-};
+}
 
-const styles = StyleSheet.create({
-  inputContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#fff',
-    borderRadius: 50,
-    borderWidth: 1,
-    borderColor: '#E5E7EB',
-    height: 56,
-    paddingHorizontal: 16,
-    marginBottom: 16,
-    
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 2,
-    elevation: 1,
-  },
-  iconPlaceholder: {
-    fontSize: 18,
-    marginRight: 10,
-  },
-  input: {
-    flex: 1,
-    height: '100%',
-    color: '#333',
-  },
-  eyeIcon: {
-    fontSize: 18,
-    padding: 4,
-  },
-});
 
-export default CustomInput;
+export default function AppNavigator() {
+  return (
+    <Stack.Navigator initialRouteName="Login" screenOptions={{ headerShown: false }}>
+      {/* Auth Flow */}
+      <Stack.Screen name="Login" component={LoginScreen} />
+      <Stack.Screen name="Signup" component={SignupScreen} />
+      
+      {/* Main App */}
+      <Stack.Screen name="MainApp" component={HomeTabs} />
+    </Stack.Navigator>
+  );
+}
 </file>
 
-<file path="src/components/Icons.jsx">
-import React from 'react';
-import Svg, { Path, Circle } from 'react-native-svg';
-
-
-
-const defaultColor = "#9CA3AF"; // Gray-400
-const defaultSize = 24;
-
-export const UserIcon = ({ color = defaultColor, size = defaultSize }) => (
-  <Svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
-    <Path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-    <Circle cx="12" cy="7" r="4" />
-  </Svg>
-);
-
-export const MailIcon = ({ color = defaultColor, size = defaultSize }) => (
-  <Svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
-    <Path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
-    <Path d="m22 6-10 7L2 6" />
-  </Svg>
-);
-
-export const LockIcon = ({ color = defaultColor, size = defaultSize }) => (
-  <Svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
-    <Path d="M19 21H5a2 2 0 0 1-2-2V11a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2z" />
-    <Path d="M7 11V7a5 5 0 0 1 10 0v4" />
-  </Svg>
-);
-
-export const EyeIcon = ({ color = defaultColor, size = defaultSize }) => (
-  <Svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
-    <Path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-    <Circle cx="12" cy="12" r="3" />
-  </Svg>
-);
-
-export const EyeOffIcon = ({ color = defaultColor, size = defaultSize }) => (
-  <Svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
-    <Path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" />
-    <Path d="M1 1l22 22" />
-  </Svg>
-);
-
-export const ArrowLeftIcon = ({ color = "#333", size = 24 }) => (
-  <Svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
-    <Path d="m15 18-6-6 6-6" />
-  </Svg>
-);
-</file>
-
-<file path="src/screens/loginScreen.jsx">
+<file path="src/screens/auth/LoginScreen.jsx">
 import React , {useState}from "react"
-import {View , Text  , StyleSheet , TextInput ,Pressable ,TouchableOpacity,ScrollView} from "react-native"
-import CustomInput from "../components/CustomInput";
-import CustomButton from "../components/CustomButton";
-import AuthFooter from "../components/AuthFooter";
-import { UserIcon, MailIcon, LockIcon, ArrowLeftIcon } from "../components/Icons";
+import { SafeAreaView } from "react-native-safe-area-context";
+import {View , Text  , StyleSheet ,Pressable ,TouchableOpacity,ScrollView } from "react-native"
+import {globalStyles , Colors} from "../../styles/globalStyles"
+import CustomInput from "../../components/CustomInput";
+import CustomButton from "../../components/CustomButton";
+import AuthFooter from "../../components/AuthFooter";
+import {MailIcon, LockIcon, ArrowLeftIcon } from "../../components/Icons";
 
 
 
@@ -411,86 +460,77 @@ const LoginScreen = ({navigation }) => {
     const [password, setPassword] = useState('');
 
     const handleLogin = () => {
-        navigation.navigate('Welcome', { email: email });
+        navigation.reset({
+        index: 0,
+        routes: [{ name: 'MainApp' }],
+    });
     };
 
-    return (
-        <ScrollView contentContainerStyle={styles.container}>
-            <View style={[styles.header, {marginBottom : 60}]}>
-                 <Text style={styles.backArrow}>{"<"}</Text> 
+    const renderHeader = () => {
+        return (
+            <View style={globalStyles.header}>
+                <TouchableOpacity>
+                    <ArrowLeftIcon/>
+                </TouchableOpacity>
             </View>
+        )
+        
+    }
 
-            <Text style = {styles.label}>Log in</Text>
-            <Text style = {styles.subtitle}>Enter your email and password to securely access your account and manage your services</Text>
-            <View style = {styles.form}>
-                {/* inputs*/}
-                <CustomInput icon={<MailIcon/>} placeholder="Email Address" isPassword={false} value={email} setValue={setEmail} />
-                <CustomInput icon={<LockIcon/>} placeholder="Password" isPassword={true} value={password} setValue={setPassword}/>
 
-                {/*checkbox*/}
-                <View style={styles.row}>
-                    <Pressable 
-                        style={styles.rememberMe}
-                        onPress={() => setIsChecked(!isChecked)}
-                    >
-                        <View style={[styles.checkbox, isChecked && styles.checkboxChecked]} />
-                        <Text style={styles.rememberText}>Remember me</Text>
-                    </Pressable>
-                    <TouchableOpacity>
-                        <Text style={styles.forgot}>Forgot Password?</Text>
-                    </TouchableOpacity>
+    const renderContent = () => {
+        return (
+            <View>
+                <Text style={globalStyles.title}>Log in</Text>
+                <Text style={globalStyles.subtitle}>Enter your email and password to securely access your account and manage your services</Text>
+                <View style={globalStyles.form}>
+                    {/* inputs*/}
+                    <CustomInput icon={<MailIcon />} placeholder="Email Address" isPassword={false} value={email} setValue={setEmail} />
+                    <CustomInput icon={<LockIcon />} placeholder="Password" isPassword={true} value={password} setValue={setPassword} />
+
+                    {/*checkbox*/}
+                    <View style={styles.row}>
+                        <Pressable
+                            style={styles.rememberMe}
+                            onPress={() => setIsChecked(!isChecked)}
+                        >
+                            <View style={[styles.checkbox, isChecked && styles.checkboxChecked]} />
+                            <Text style={styles.rememberText}>Remember me</Text>
+                        </Pressable>
+                        <TouchableOpacity>
+                            <Text style={styles.forgot}>Forgot Password?</Text>
+                        </TouchableOpacity>
+                    </View>
+
+                    <CustomButton title="Login" onPress={handleLogin} />
+
                 </View>
-
-                <CustomButton title="Login" onPress={handleLogin} />
-
-                <AuthFooter 
-                    message="Dont have an account?"
-                    actionText="Sign Up here"
-                    onActionPress={() => navigation.navigate('Signup')}
-                 />
-                
-
             </View>
+        )
+    }
 
-        </ScrollView>     
+    const renderFooter = () => {
+        return(
+            <AuthFooter
+                        message="Dont have an account?"
+                        actionText="Sign Up here"
+                        onActionPress={() => navigation.navigate('Signup')}
+            />
+        )
+    }
+    return (
+        <SafeAreaView style={globalStyles.safeArea} edges={["top","left","right"]}>
+            <ScrollView contentContainerStyle={globalStyles.container}>
+                {renderHeader()}
+                {renderContent()}
+                {renderFooter()}
+            </ScrollView>     
+        </SafeAreaView>
     )
 
     }
 
-export const styles = StyleSheet.create({
-    container : {
-            flexGrow : 1,
-            padding: 24,
-            backgroundColor: '#F9FAFB',
-    },
-    header: {
-        marginBottom: 20,
-        marginTop: 20,
-    },
-    backArrow: {
-        fontSize: 24,
-        color: '#333',
-    },
-    subtitle: {
-        fontSize:14,
-        color: '#6B7280',
-        textAlign: 'center',
-        marginBottom: 30,
-        lineHeight: 20,
-    },
-    label : {
-        fontSize: 28,
-        fontWeight: 'bold',
-        color: '#111',
-        marginBottom: 8,
-        textAlign: 'center',
-
-    },
-    form: {
-        width: '100%',
-    },
-    
-    
+export const styles = StyleSheet.create({    
     row: {
         flexDirection: 'row',
         justifyContent: 'space-between',
@@ -505,14 +545,14 @@ export const styles = StyleSheet.create({
         width: 20,
         height: 20,
         borderWidth: 1,
-        borderColor: '#D1D5DB',
+        borderColor: Colors.border,
         borderRadius: 4,
         marginRight: 8,
-        backgroundColor: '#fff',
+        backgroundColor: Colors.white,
     },
     checkboxChecked: {
-        backgroundColor: '#2D8C5F', 
-        borderColor: '#2D8C5F',
+        backgroundColor: Colors.primary, 
+        borderColor: Colors.primary,
     },
     rememberText: {
         color: '#374151',
@@ -520,7 +560,7 @@ export const styles = StyleSheet.create({
     },
     forgot: {
         fontWeight: '600',
-        color: '#111',
+        color: Colors.textPrimary,
         fontSize: 14,
     },
     
@@ -531,13 +571,17 @@ export const styles = StyleSheet.create({
 export default LoginScreen;
 </file>
 
-<file path="src/screens/SignupScreen.jsx">
+<file path="src/screens/auth/SignupScreen.jsx">
 import React , {useState}from "react"
-import {View , Text  , StyleSheet , TextInput ,Pressable ,TouchableOpacity,ScrollView} from "react-native"
-import CustomInput from "../components/CustomInput";
-import CustomButton from "../components/CustomButton";
-import AuthFooter from "../components/AuthFooter";
-import { UserIcon, MailIcon, LockIcon, ArrowLeftIcon } from "../components/Icons";
+import { SafeAreaView } from "react-native-safe-area-context";
+import {View , Text ,TouchableOpacity,ScrollView } from "react-native"
+import CustomInput from "../../components/CustomInput";
+import CustomButton from "../../components/CustomButton";
+import AuthFooter from "../../components/AuthFooter";
+import { UserIcon, MailIcon, LockIcon, ArrowLeftIcon } from "../../components/Icons";
+import { globalStyles } from "../../styles/globalStyles";
+
+
 
 
 const SignupScreen = ({navigation }) => {
@@ -550,121 +594,344 @@ const SignupScreen = ({navigation }) => {
         navigation.navigate('Welcome', { email: email });
     };
 
-    return (
-        <ScrollView contentContainerStyle={styles.container}>
-            <View style={[styles.header, {marginBottom : 60}]}>
+    const renderHeader = () => {
+        return(
+            <View style={globalStyles.header}>
                 <TouchableOpacity onPress={() => navigation.goBack()}>
                     <ArrowLeftIcon />
                 </TouchableOpacity>
             </View>
+        )
+    }
 
-            <Text style = {styles.label}>Create Account</Text>
-            <Text style = {styles.subtitle}>Create a new acccount to get started and enjoy seamless access to our features</Text>
-            <View style = {styles.form}>
+    const renderContent = () => {
+        return(
+            <View >
+            <Text style = {globalStyles.title}>Create Account</Text>
+            <Text style = {globalStyles.subtitle}>Create a new acccount to get started and enjoy seamless access to our features</Text>
+            <View style = {globalStyles.form}>
                 {/* inputs*/}
                 <CustomInput icon={<UserIcon />} placeholder="Name" isPassword={false} value={name} setValue={setName}/>
                 <CustomInput icon={<MailIcon />} placeholder="Email Address" isPassword={false} value = {email} setValue={setEmail}/>
                 <CustomInput icon={<LockIcon/>} placeholder="Password" isPassword={true} value={password} setValue={setPassword}/>
                 <CustomInput icon={<LockIcon/>} placeholder="Confirm Password" isPassword={true} value={confirmPassword} setValue={setConfirmPassword}/>
 
-               
-
                 <CustomButton title="Create Account" onPress={handleLogin} />
 
-                <AuthFooter
+            </View>
+            </View>
+        )
+    }
+
+    const renderFooter = () => {
+        return(
+            <AuthFooter
                     message="Already have an account ?"
                     actionText="Sign in here"
                     onActionPress={() => navigation.navigate("Login")}
-
-                />
-
-            </View>
-
-        </ScrollView>     
-    )
-
+            />
+        )
     }
 
-export const styles = StyleSheet.create({
-    container : {
-            flexGrow : 1,
-            padding: 24,
-            backgroundColor: '#F9FAFB',
-    },
-    header: {
-        marginBottom: 20,
-        marginTop: 20,
-    },
-    subtitle: {
-        fontSize:14,
-        color: '#6B7280',
-        textAlign: 'center',
-        marginBottom: 30,
-        lineHeight: 20,
-    },
-    label : {
-        fontSize: 28,
-        fontWeight: 'bold',
-        color: '#111',
-        marginBottom: 8,
-        textAlign: 'center',
-
-    },
-    form: {
-        width: '100%',
-    },
-    
-    
-    
-
-});
+    return (
+        <SafeAreaView style={globalStyles.safeArea}>
+        <ScrollView contentContainerStyle={globalStyles.container}>
+            {renderHeader()}
+            {renderContent()}
+            {renderFooter()}
+        </ScrollView>  
+        </SafeAreaView>   
+    )
+    }
 
 
 
 export default SignupScreen;
 </file>
 
-<file path="src/screens/WelcomeScreen.jsx">
-import React from "react"
-import {View , Text , StyleSheet} from "react-native"
-import CustomButton from '../components/CustomButton'; 
+<file path="src/screens/home/HomeScreen.jsx">
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Switch } from 'react-native';
+import { Colors, globalStyles, Spacing } from '../../styles/globalStyles';
+import Icon from 'react-native-vector-icons/Feather';
+
+import ScreenWrapper from '../../components/common/ScreenWrapper';
+import Header from '../../components/common/Header';
+import Card from '../../components/common/Card';
+import IconButton from '../../components/common/IconButton';
 
 
-const WelcomeScreen = ({route , navigation}) => {
-
-    const {email} = route.params || {}
+const DeviceCard = ({ title, subtitle, icon, initialStatus = false }) => {
+    const [isOn, setIsOn] = useState(initialStatus);
 
     return (
-        <View style={styles.container}>
-            <Text style = {styles.text}>You are logged in as {email}</Text>
-            <View style={{ width: '70%', marginTop: 50 }}>
-                <CustomButton
-                    title="Log Out"
-                    onPress={() => navigation.navigate('Login')}
+        <Card style={styles.deviceCard}>
+            {/* Top Row: Icon + Text */}
+            <View style={styles.cardHeader}>
+                <View style={[styles.iconBox, { backgroundColor: isOn ? Colors.primary : Colors.white }]}>
+                    <Icon 
+                        name={icon} 
+                        size={20} 
+                        color={isOn ? Colors.white : Colors.primary} 
+                    />
+                </View>
+                <View style={styles.textContainer}>
+                    <Text style={styles.deviceTitle} numberOfLines={1}>{title}</Text>
+                    <Text style={styles.deviceSubtitle} numberOfLines={1}>{subtitle}</Text>
+                </View>
+            </View>
+
+            {/* Bottom Row: Status + Toggle */}
+            <View style={styles.cardFooter}>
+                <Text style={styles.statusText}>{isOn ? 'ON' : 'OFF'}</Text>
+                <Switch
+                    trackColor={{ false: "#E5E7EB", true: Colors.primary }}
+                    thumbColor={Colors.white}
+                    ios_backgroundColor="#E5E7EB"
+                    onValueChange={() => setIsOn(!isOn)}
+                    value={isOn}
+                    style={{ transform: [{ scaleX: 0.8 }, { scaleY: 0.8 }] }} 
                 />
             </View>
-        </View>
+        </Card>
+    );
+};
 
-        
+const renderHeader = () => {
+    return(
+        <Header 
+            showLogo={true} 
+            rightComponent={
+                <View style={{flexDirection: 'row', gap: 10}}>
+                    <IconButton icon={<Icon name="search" size={20} color={Colors.textPrimary} />} />
+                    <IconButton icon={<Icon name="bell" size={20} color={Colors.textPrimary} />} />
+                    <View style={styles.avatar} />
+                </View>
+            }
+        />
     )
-    
 }
 
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center', // vertical
-        alignItems: 'center',     // horizontal
-    },
-    text:{
-        textAlign : 'center',
-        fontSize:20,
-        fontWeight : 'bold'
-        
-    }
-})
+const renderContent1 = () => {
+    return(
+        <View>
+            {/*room tabs*/}
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.tabContainer}>
+                <TouchableOpacity style={[styles.pill, styles.activePill]}>
+                    <Text style={styles.activeText}>Living Room</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.pill}><Text style={styles.inactiveText}>Bedroom</Text></TouchableOpacity>
+                <TouchableOpacity style={styles.pill}><Text style={styles.inactiveText}>Kitchen</Text></TouchableOpacity>
+            </ScrollView>
 
-export default WelcomeScreen
+            {/*camera section */}
+            <View style={styles.sectionHeader}>
+                <Text style={styles.sectionTitle}>Camera</Text>
+                <View style={styles.roomBadge}>
+                    <Text style={styles.roomBadgeText}>Living Room ▾</Text>
+                </View>
+            </View>
+
+            <Card style={styles.cameraCard}>
+                <View style={styles.liveBadge}>
+                    <Text style={styles.liveText}>• LIVE</Text>
+                </View>
+                <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
+                    <Icon name="image" size={40} color="#9CA3AF" />
+                </View>
+            </Card>
+        </View>
+
+    )
+}
+
+const renderContent2 = () => {
+    return(
+            <View style={styles.grid}>
+                
+                <View style={styles.gridItem}>
+                    <DeviceCard 
+                        title="Living Room" 
+                        subtitle="Padlock" 
+                        icon="lock" 
+                        initialStatus={false} 
+                    />
+                </View>
+                
+                <View style={styles.gridItem}>
+                    <DeviceCard 
+                        title="JBL GO 3" 
+                        subtitle="Speaker" 
+                        icon="speaker" 
+                        initialStatus={false} 
+                    />
+                </View>
+                            
+                <TouchableOpacity style={styles.gridItem} onPress={() => navigation.navigate('DeviceControl')}>
+                    <DeviceCard 
+                        title="Samsung y1" 
+                        subtitle="Smart TV" 
+                        icon="tv" 
+                        initialStatus={true} 
+                    />
+                </TouchableOpacity>
+                
+                <View style={styles.gridItem}>
+                    <DeviceCard 
+                        title="Backyard" 
+                        subtitle="Smart Door" 
+                        icon="sidebar" 
+                        initialStatus={false} 
+                    />
+                </View>
+            </View>
+    )
+}
+
+const HomeScreen = ({ navigation }) => {
+  return (
+    <ScreenWrapper>
+        {renderHeader()}
+
+        <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 100 }}>
+            {renderContent1()}
+            {renderContent2()}
+        </ScrollView>
+    </ScreenWrapper>
+  );
+};
+
+const styles = StyleSheet.create({
+    avatar: { width: 40, height: 40, borderRadius: 20, backgroundColor: '#E5E7EB' },
+    
+    // Tabs
+    tabContainer: { marginBottom: 24, flexDirection: 'row' },
+    pill: { paddingVertical: 10, paddingHorizontal: 20, borderRadius: 30, marginRight: 10, backgroundColor: Colors.white },
+    activePill: { backgroundColor: Colors.textPrimary }, 
+    activeText: { color: Colors.white, fontWeight: '600' },
+    inactiveText: { color: Colors.textSecondary },
+
+    // Camera Header
+    sectionHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 },
+    sectionTitle: { fontSize: 18, fontWeight: '700', color: Colors.textPrimary },
+    roomBadge: { paddingHorizontal: 12, paddingVertical: 6, backgroundColor: Colors.white, borderRadius: 20 },
+    roomBadgeText: { fontSize: 12, fontWeight: '600', color: Colors.textPrimary },
+
+    cameraCard: { height: 180, backgroundColor: '#E5E7EB', padding: 0, overflow:'hidden' },
+    liveBadge: { position: 'absolute', top: 12, right: 12, backgroundColor: Colors.white, paddingHorizontal: 8, paddingVertical: 4, borderRadius: 6, zIndex: 10 },
+    liveText: { color: Colors.red, fontSize: 10, fontWeight: 'bold' },
+
+    // Grid Layout
+    grid: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', rowGap: 12 }, 
+    gridItem: { width: '48%' }, 
+    
+    // Device Card Styles
+    deviceCard: { 
+        width: '100%', 
+        height: 150, 
+        justifyContent: 'space-between', 
+        padding: 16 
+    },
+    cardHeader: { flexDirection: 'row', alignItems: 'flex-start' },
+    iconBox: { 
+        width: 40, height: 40, borderRadius: 20, 
+        alignItems: 'center', justifyContent: 'center',
+        shadowColor: "#000", shadowOffset: {width:0, height:2}, shadowOpacity:0.1, shadowRadius:3, elevation:2
+    },
+    textContainer: { marginLeft: 12, flex: 1 },
+    deviceTitle: { fontSize: 14, fontWeight: 'bold', color: Colors.textPrimary, marginBottom: 2 },
+    deviceSubtitle: { fontSize: 12, color: Colors.textSecondary },
+
+    cardFooter: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
+    statusText: { fontSize: 12, fontWeight: '600', color: Colors.textSecondary },
+});
+
+export default HomeScreen;
+</file>
+
+<file path="src/styles/globalStyles.js">
+import { StyleSheet, Dimensions } from 'react-native';
+
+const { height } = Dimensions.get('window');
+
+
+export const Colors = {
+    primary: '#2D8C5F',
+    primaryLight: '#D4EBE2',
+
+    background: '#F3F4F6',
+
+    textPrimary: '#111827',
+    textSecondary: '#6B7280',
+
+    border: '#E5E7EB',
+    red: '#EF4444',
+    white: '#fff',
+};
+
+export const Spacing = {
+    s: 8,
+    m: 16,
+    l: 24,
+    xl: 32,
+};
+
+export const Fonts = {
+  regular: 'Poppins-Regular',
+  medium: 'Poppins-Medium',
+  bold: 'Poppins-Bold',
+};
+
+export const globalStyles = StyleSheet.create({
+    // Parent Container 
+    safeArea: {
+        width: '100%',
+        height: height, 
+        backgroundColor: Colors.background,
+    },
+    // The ScrollView content container
+    container: {
+        flexGrow: 1,
+        padding: 24,
+    },
+    //shadow
+    shadow: {
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.08,
+        shadowRadius: 12,
+        elevation: 5, // Android shadow
+    },
+    // Typography
+    title: {
+        fontSize: 28,
+        fontWeight: '600',
+        color: Colors.textPrimary,
+        marginBottom: 8,
+        textAlign: 'center',
+    },
+    subtitle: {
+        fontSize: 14,
+        color: Colors.textSecondary,
+        textAlign: 'center',
+        marginBottom: 30,
+        lineHeight: 20,
+    },
+    // Common sections
+    header: {
+        marginBottom: 20,
+        marginTop: 20,
+    },
+    form: {
+        width: '100%',
+    },
+});
+</file>
+
+<file path="react-native.config.js">
+module.exports = {
+  assets: ['./assets/fonts'],
+};
 </file>
 
 <file path="__tests__/App.test.tsx">
@@ -921,6 +1188,8 @@ dependencies {
         implementation jscFlavor
     }
 }
+
+apply from: "../../node_modules/react-native-vector-icons/fonts.gradle"
 </file>
 
 <file path="android/app/proguard-rules.pro">
@@ -2261,6 +2530,246 @@ target 'rn_auth' do
 end
 </file>
 
+<file path="src/components/AuthFooter.jsx">
+import React from 'react';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { Colors } from '../styles/globalStyles';
+
+const AuthFooter = ({ message, actionText, onActionPress }) => {
+  return (
+    <View style={styles.container}>
+      {/* 1. Switch Account Link */}
+      <View style={styles.switchRow}>
+        <Text style={styles.text}>{message} </Text>
+        <TouchableOpacity onPress={onActionPress}>
+          <Text style={styles.switchText}>{actionText}</Text>
+        </TouchableOpacity>
+      </View>
+
+      {/* 2. Divider */}
+      <View style={styles.divider} />
+
+      {/* 3. Social Section */}
+      <Text style={styles.orText}>Or Continue With Account</Text>
+      
+      <View style={styles.socialRow}>
+        <TouchableOpacity style={styles.socialBtn}>
+           <Text style={styles.socialIcon}>f</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.socialBtn}>
+           <Text style={styles.socialIcon}>G</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.socialBtn}>
+           <Text style={styles.socialIcon}></Text>
+        </TouchableOpacity>
+      </View>
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    marginTop: 20,
+    width: '100%',
+  },
+  switchRow: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginBottom: 20,
+  },
+  text: {
+    color: Colors.textSecondary,
+    fontSize: 14,
+  },
+  switchText: {
+    color: Colors.primary,
+    fontWeight: '600',
+    fontSize: 14,
+  },
+  divider: {
+    height: 1,
+    backgroundColor: Colors.border,
+    width: '100%',
+    marginBottom: 20,
+  },
+  orText: {
+    textAlign: 'center',
+    color: '#9CA3AF',
+    marginBottom: 20,
+    fontSize: 12,
+  },
+  socialRow: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    gap: 20,
+  },
+  socialBtn: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    backgroundColor: Colors.white,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: Colors.border,
+    // Slight shadow
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 2,
+    elevation: 2,
+  },
+  socialIcon: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: Colors.textPrimary,
+  }
+});
+
+export default AuthFooter;
+</file>
+
+<file path="src/components/CustomButton.jsx">
+import React from 'react';
+import { TouchableOpacity, Text, StyleSheet } from 'react-native';
+import { Colors } from '../styles/globalStyles';
+
+
+const CustomButton = ({ title, onPress }) => {
+  return (
+    <TouchableOpacity style={styles.loginButton} onPress={onPress}>
+      <Text style={styles.loginButtonText}>{title}</Text>
+    </TouchableOpacity>
+  );
+};
+
+const styles = StyleSheet.create({
+  loginButton: {
+    backgroundColor: Colors.primary, 
+    borderRadius: 50,
+    height: 56,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 20,
+    marginBottom: 20,
+    shadowColor: Colors.primary,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 4,
+  },
+  loginButtonText: {
+    color: Colors.white,
+    fontSize: 16,
+    fontWeight: '600',
+  },
+});
+
+export default CustomButton;
+</file>
+
+<file path="src/components/CustomInput.jsx">
+import React, { useState } from 'react';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import { EyeIcon, EyeOffIcon } from './Icons';
+import { Colors } from '../styles/globalStyles';
+
+const CustomInput = ({ icon, placeholder, isPassword ,value , setValue}) => {
+  
+  const [secureText, setSecureText] = useState(isPassword);
+
+  return (
+    <View style={styles.inputContainer}>
+      <Text style={styles.iconPlaceholder}>{icon}</Text>
+      
+      <TextInput
+        style={styles.input}
+        placeholder={placeholder}
+        placeholderTextColor="#999"
+        secureTextEntry={secureText}
+        value={value}
+        onChangeText={setValue}
+      />
+
+      
+      {isPassword && (
+        <TouchableOpacity onPress={() => setSecureText(!secureText)}>
+          {secureText ? <EyeIcon size={20} /> : <EyeOffIcon size={20} />}
+        </TouchableOpacity>
+      )}
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  inputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: Colors.white,
+    borderRadius: 50,
+    borderWidth: 1,
+    borderColor: Colors.border,
+    height: 56,
+    paddingHorizontal: 16,
+    marginBottom: 16,
+    
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 2,
+    elevation: 1,
+  },
+  iconPlaceholder: {
+    fontSize: 18,
+    marginRight: 10,
+  },
+  input: {
+    flex: 1,
+    height: '100%',
+    color: '#333',
+  },
+  eyeIcon: {
+    fontSize: 18,
+    padding: 4,
+  },
+});
+
+export default CustomInput;
+</file>
+
+<file path="src/components/Icons.jsx">
+import React from 'react';
+import Icon from 'react-native-vector-icons/Feather'; 
+import { Colors } from '../styles/globalStyles';
+
+// generic wrapper to handle defaults
+const VectorIcon = ({ name, color, size }) => (
+  <Icon 
+    name={name} 
+    color={color || Colors.textSecondary} 
+    size={size || 24} 
+  />
+);
+
+export const UserIcon = (props) => <VectorIcon name="user" {...props} />;
+
+export const MailIcon = (props) => <VectorIcon name="mail" {...props} />;
+
+export const LockIcon = (props) => <VectorIcon name="lock" {...props} />;
+
+export const EyeIcon = (props) => <VectorIcon name="eye" {...props} />;
+
+export const EyeOffIcon = (props) => <VectorIcon name="eye-off" {...props} />;
+
+export const ArrowLeftIcon = (props) => <VectorIcon name="arrow-left" {...props} />;
+
+export const SearchIcon = (props) => <VectorIcon name="search" {...props} />;
+
+export const BellIcon = (props) => <VectorIcon name="bell" {...props} />;
+
+export const MenuIcon = (props) => <VectorIcon name="more-vertical" {...props} />;
+</file>
+
 <file path=".eslintrc.js">
 module.exports = {
   root: true,
@@ -2363,6 +2872,24 @@ module.exports = {
   "name": "rn_auth",
   "displayName": "rn_auth"
 }
+</file>
+
+<file path="App.jsx">
+import React from "react";
+import { SafeAreaProvider } from "react-native-safe-area-context";
+import { NavigationContainer } from "@react-navigation/native";
+import AppNavigator from "./src/navigation/AppNavigator.jsx"
+
+function App(){
+  return(
+    <SafeAreaProvider>
+      <NavigationContainer>
+         <AppNavigator /> 
+      </NavigationContainer>
+    </SafeAreaProvider>
+  )
+}
+export default App;
 </file>
 
 <file path="babel.config.js">
@@ -2522,17 +3049,6 @@ To learn more about React Native, take a look at the following resources:
 - [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
 </file>
 
-<file path="tsconfig.json">
-{
-  "extends": "@react-native/typescript-config",
-  "compilerOptions": {
-    "types": ["jest"],
-  },
-  "include": ["**/*.ts", "**/*.tsx", "src/components/CustomButton.jsx", "src/components/AuthFooter.jsx", "src/components/Icons.jsx", "src/components/CustomInput.jsx", "src/screens/WelcomeScreen.jsx", "src/screens/SignupScreen.jsx", "src/screens/loginScreen.jsx"],
-  "exclude": ["**/node_modules", "**/Pods"]
-}
-</file>
-
 <file path="android/app/src/main/java/com/rn_auth/MainActivity.kt">
 package com.rn_auth
 
@@ -2565,42 +3081,15 @@ class MainActivity : ReactActivity() {
 }
 </file>
 
-<file path="App.tsx">
-import React from "react";
-
-import { NavigationContainer } from "@react-navigation/native";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import LoginScreen from "./src/screens/loginScreen";
-import SignupScreen from "./src/screens/SignupScreen";
-import WelcomeScreen from "./src/screens/WelcomeScreen";
-
-const Stack = createNativeStackNavigator();
-
-function App(): React.JSX.Element {
-  return(
-    <NavigationContainer>
-      <Stack.Navigator initialRouteName = "Login">
-          <Stack.Screen
-            name = "Login"
-            component = {LoginScreen}
-            options = {{headerShown : false}}
-          />
-          <Stack.Screen
-            name = "Signup"
-            component = {SignupScreen}
-            options = {{headerShown : false}}
-          />
-        <Stack.Screen
-          name="Welcome"
-          component={WelcomeScreen}
-          options={{ headerShown: false }}
-        />
-      </Stack.Navigator>
-    </NavigationContainer>
-  )
+<file path="tsconfig.json">
+{
+  "extends": "@react-native/typescript-config",
+  "compilerOptions": {
+    "types": ["jest"],
+  },
+  "include": ["**/*.ts", "**/*.tsx", "src/components/CustomButton.jsx", "src/components/AuthFooter.jsx", "src/components/Icons.jsx", "src/components/CustomInput.jsx", "src/screens/auth/WelcomeScreen.jsx", "src/screens/auth/SignupScreen.jsx", "src/screens/auth/LoginScreen.jsx", "App.jsx"],
+  "exclude": ["**/node_modules", "**/Pods"]
 }
-
-export default App;
 </file>
 
 <file path="package.json">
@@ -2618,13 +3107,15 @@ export default App;
   "dependencies": {
     "@react-native-community/checkbox": "^0.5.20",
     "@react-native/new-app-screen": "0.83.1",
+    "@react-navigation/bottom-tabs": "^7.10.1",
     "@react-navigation/native": "^7.1.28",
     "@react-navigation/native-stack": "^7.10.0",
     "react": "19.2.0",
     "react-native": "0.83.1",
     "react-native-safe-area-context": "^5.6.2",
     "react-native-screens": "^4.19.0",
-    "react-native-svg": "^15.15.1"
+    "react-native-svg": "^15.15.1",
+    "react-native-vector-icons": "^10.3.0"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
@@ -2639,6 +3130,7 @@ export default App;
     "@react-native/typescript-config": "0.83.1",
     "@types/jest": "^29.5.13",
     "@types/react": "^19.2.0",
+    "@types/react-native-vector-icons": "^6.4.18",
     "@types/react-test-renderer": "^19.1.0",
     "eslint": "^8.19.0",
     "jest": "^29.6.3",
