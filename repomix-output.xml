@@ -103,14 +103,17 @@ ios/
   .xcode.env
   Podfile
 src/
+  assets/
+    fonts
   components/
-    CustomButton.tsx
-    CustomInput.tsx
-    footer.tsx
+    AuthFooter.jsx
+    CustomButton.jsx
+    CustomInput.jsx
+    Icons.jsx
   screens/
-    loginScreen.tsx
-    SignupScreen.tsx
-    WelcomeScreen.tsx
+    loginScreen.jsx
+    SignupScreen.jsx
+    WelcomeScreen.jsx
 .eslintrc.js
 .gitignore
 .prettierrc.js
@@ -130,135 +133,16 @@ tsconfig.json
 <files>
 This section contains the contents of the repository's files.
 
-<file path="src/components/CustomButton.tsx">
-import React from 'react';
-import { TouchableOpacity, Text, StyleSheet } from 'react-native';
+<file path="src/assets/fonts">
 
-interface CustomButtonProps {
-  title : string;
-  onPress : () => void;
-}
-
-const CustomButton = ({ title, onPress }:CustomButtonProps) => {
-  return (
-    <TouchableOpacity style={styles.loginButton} onPress={onPress}>
-      <Text style={styles.loginButtonText}>{title}</Text>
-    </TouchableOpacity>
-  );
-};
-
-const styles = StyleSheet.create({
-  loginButton: {
-    backgroundColor: '#2D8C5F', 
-    borderRadius: 50,
-    height: 56,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: 20,
-    marginBottom: 20,
-    shadowColor: "#2D8C5F",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-    elevation: 4,
-  },
-  loginButtonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-});
-
-export default CustomButton;
 </file>
 
-<file path="src/components/CustomInput.tsx">
-import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
-
-interface CustomInputProps {
-  icon: string;       
-  placeholder : string;    
-  isPassword : boolean;
-  value : string;
-  setValue : (text: string) => void;
-}
-
-const CustomInput = ({ icon, placeholder, isPassword ,value , setValue}:CustomInputProps) => {
-  
-  const [secureText, setSecureText] = useState(isPassword);
-
-  return (
-    <View style={styles.inputContainer}>
-      <Text style={styles.iconPlaceholder}>{icon}</Text>
-      
-      <TextInput
-        style={styles.input}
-        placeholder={placeholder}
-        placeholderTextColor="#999"
-        secureTextEntry={secureText}
-        value={value}
-        onChangeText={setValue}
-      />
-
-      
-      {isPassword && (
-        <TouchableOpacity onPress={() => setSecureText(!secureText)}>
-          <Text style={styles.eyeIcon}>{secureText ? "👁️" : "🚫"}</Text>
-        </TouchableOpacity>
-      )}
-    </View>
-  );
-};
-
-const styles = StyleSheet.create({
-  inputContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#fff',
-    borderRadius: 50,
-    borderWidth: 1,
-    borderColor: '#E5E7EB',
-    height: 56,
-    paddingHorizontal: 16,
-    marginBottom: 16,
-    
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 2,
-    elevation: 1,
-  },
-  iconPlaceholder: {
-    fontSize: 18,
-    marginRight: 10,
-  },
-  input: {
-    flex: 1,
-    height: '100%',
-    color: '#333',
-  },
-  eyeIcon: {
-    fontSize: 18,
-    padding: 4,
-  },
-});
-
-export default CustomInput;
-</file>
-
-<file path="src/components/footer.tsx">
+<file path="src/components/AuthFooter.jsx">
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 
 
-interface AuthFooterProps {
-  message: string;       
-  actionText: string;    
-  onActionPress: () => void; 
-}
-
-const AuthFooter = ({ message, actionText, onActionPress }: AuthFooterProps) => {
+const AuthFooter = ({ message, actionText, onActionPress }) => {
   return (
     <View style={styles.container}>
       {/* 1. Switch Account Link */}
@@ -352,20 +236,181 @@ const styles = StyleSheet.create({
 export default AuthFooter;
 </file>
 
-<file path="src/screens/SignupScreen.tsx">
+<file path="src/components/CustomButton.jsx">
+import React from 'react';
+import { TouchableOpacity, Text, StyleSheet } from 'react-native';
+
+
+
+const CustomButton = ({ title, onPress }) => {
+  return (
+    <TouchableOpacity style={styles.loginButton} onPress={onPress}>
+      <Text style={styles.loginButtonText}>{title}</Text>
+    </TouchableOpacity>
+  );
+};
+
+const styles = StyleSheet.create({
+  loginButton: {
+    backgroundColor: '#2D8C5F', 
+    borderRadius: 50,
+    height: 56,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 20,
+    marginBottom: 20,
+    shadowColor: "#2D8C5F",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 4,
+  },
+  loginButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+});
+
+export default CustomButton;
+</file>
+
+<file path="src/components/CustomInput.jsx">
+import React, { useState } from 'react';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import { EyeIcon, EyeOffIcon } from './Icons';
+
+
+const CustomInput = ({ icon, placeholder, isPassword ,value , setValue}) => {
+  
+  const [secureText, setSecureText] = useState(isPassword);
+
+  return (
+    <View style={styles.inputContainer}>
+      <Text style={styles.iconPlaceholder}>{icon}</Text>
+      
+      <TextInput
+        style={styles.input}
+        placeholder={placeholder}
+        placeholderTextColor="#999"
+        secureTextEntry={secureText}
+        value={value}
+        onChangeText={setValue}
+      />
+
+      
+      {isPassword && (
+        <TouchableOpacity onPress={() => setSecureText(!secureText)}>
+          {secureText ? <EyeIcon size={20} /> : <EyeOffIcon size={20} />}
+        </TouchableOpacity>
+      )}
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  inputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    borderRadius: 50,
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+    height: 56,
+    paddingHorizontal: 16,
+    marginBottom: 16,
+    
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 2,
+    elevation: 1,
+  },
+  iconPlaceholder: {
+    fontSize: 18,
+    marginRight: 10,
+  },
+  input: {
+    flex: 1,
+    height: '100%',
+    color: '#333',
+  },
+  eyeIcon: {
+    fontSize: 18,
+    padding: 4,
+  },
+});
+
+export default CustomInput;
+</file>
+
+<file path="src/components/Icons.jsx">
+import React from 'react';
+import Svg, { Path, Circle } from 'react-native-svg';
+
+
+
+const defaultColor = "#9CA3AF"; // Gray-400
+const defaultSize = 24;
+
+export const UserIcon = ({ color = defaultColor, size = defaultSize }) => (
+  <Svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+    <Path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+    <Circle cx="12" cy="7" r="4" />
+  </Svg>
+);
+
+export const MailIcon = ({ color = defaultColor, size = defaultSize }) => (
+  <Svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+    <Path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+    <Path d="m22 6-10 7L2 6" />
+  </Svg>
+);
+
+export const LockIcon = ({ color = defaultColor, size = defaultSize }) => (
+  <Svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+    <Path d="M19 21H5a2 2 0 0 1-2-2V11a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2z" />
+    <Path d="M7 11V7a5 5 0 0 1 10 0v4" />
+  </Svg>
+);
+
+export const EyeIcon = ({ color = defaultColor, size = defaultSize }) => (
+  <Svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+    <Path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+    <Circle cx="12" cy="12" r="3" />
+  </Svg>
+);
+
+export const EyeOffIcon = ({ color = defaultColor, size = defaultSize }) => (
+  <Svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+    <Path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" />
+    <Path d="M1 1l22 22" />
+  </Svg>
+);
+
+export const ArrowLeftIcon = ({ color = "#333", size = 24 }) => (
+  <Svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+    <Path d="m15 18-6-6 6-6" />
+  </Svg>
+);
+</file>
+
+<file path="src/screens/loginScreen.jsx">
 import React , {useState}from "react"
 import {View , Text  , StyleSheet , TextInput ,Pressable ,TouchableOpacity,ScrollView} from "react-native"
 import CustomInput from "../components/CustomInput";
 import CustomButton from "../components/CustomButton";
-import AuthFooter from "../components/footer";
+import AuthFooter from "../components/AuthFooter";
+import { UserIcon, MailIcon, LockIcon, ArrowLeftIcon } from "../components/Icons";
 
 
-const SignupScreen = ({navigation }:any ) => {
+
+const LoginScreen = ({navigation }) => {
     const [isChecked, setIsChecked] = useState(false);
-    const [secureText, setSecureText] = useState(true);
     const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+
     const handleLogin = () => {
-        // 2. Navigate AND pass the email object
         navigation.navigate('Welcome', { email: email });
     };
 
@@ -375,25 +420,35 @@ const SignupScreen = ({navigation }:any ) => {
                  <Text style={styles.backArrow}>{"<"}</Text> 
             </View>
 
-            <Text style = {styles.label}>Create Account</Text>
-            <Text style = {styles.subtitle}>Create a new acccount to get started and enjoy seamless access to our features</Text>
+            <Text style = {styles.label}>Log in</Text>
+            <Text style = {styles.subtitle}>Enter your email and password to securely access your account and manage your services</Text>
             <View style = {styles.form}>
                 {/* inputs*/}
-                <CustomInput icon="🙍🏻" placeholder="Name" isPassword={false}/>
-                <CustomInput icon="✉️" placeholder="Email Address" isPassword={false} value = {email} setValue={setEmail}/>
-                <CustomInput icon="🔒" placeholder="Password" isPassword={true}/>
-                <CustomInput icon="🔒" placeholder="Confirm Password" isPassword={true}/>
+                <CustomInput icon={<MailIcon/>} placeholder="Email Address" isPassword={false} value={email} setValue={setEmail} />
+                <CustomInput icon={<LockIcon/>} placeholder="Password" isPassword={true} value={password} setValue={setPassword}/>
 
-               
+                {/*checkbox*/}
+                <View style={styles.row}>
+                    <Pressable 
+                        style={styles.rememberMe}
+                        onPress={() => setIsChecked(!isChecked)}
+                    >
+                        <View style={[styles.checkbox, isChecked && styles.checkboxChecked]} />
+                        <Text style={styles.rememberText}>Remember me</Text>
+                    </Pressable>
+                    <TouchableOpacity>
+                        <Text style={styles.forgot}>Forgot Password?</Text>
+                    </TouchableOpacity>
+                </View>
 
-                <CustomButton title="Create Account" onPress={handleLogin} />
+                <CustomButton title="Login" onPress={handleLogin} />
 
-                <AuthFooter
-                    message="Already have an account ?"
-                    actionText="Sign in here"
-                    onActionPress={() => navigation.navigate("Login")}
-
-                />
+                <AuthFooter 
+                    message="Dont have an account?"
+                    actionText="Sign Up here"
+                    onActionPress={() => navigation.navigate('Signup')}
+                 />
+                
 
             </View>
 
@@ -468,39 +523,99 @@ export const styles = StyleSheet.create({
         color: '#111',
         fontSize: 14,
     },
-    signupRow: {
-        flexDirection: 'row',
-        justifyContent: 'center',
-        marginBottom: 40,
-    },
-    text: {
-        color: '#6B7280',
-    },
-    signupText: {
-        color: '#2D8C5F',
-        fontWeight: 'bold',
-    },
-    socialRow: {
-        flexDirection: 'row',
-        justifyContent: 'center',
-        gap: 20,
-    },
-    socialBtn: {
-        width: 50,
-        height: 50,
-        borderRadius: 25,
-        backgroundColor: '#fff',
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderWidth: 1,
-        borderColor: '#E5E7EB',
-    },
-    divider: {
-      height: 1,
-      backgroundColor: '#ddd',
-      width: '100%',
-      marginBottom:20,
+    
+});
+
+
+
+export default LoginScreen;
+</file>
+
+<file path="src/screens/SignupScreen.jsx">
+import React , {useState}from "react"
+import {View , Text  , StyleSheet , TextInput ,Pressable ,TouchableOpacity,ScrollView} from "react-native"
+import CustomInput from "../components/CustomInput";
+import CustomButton from "../components/CustomButton";
+import AuthFooter from "../components/AuthFooter";
+import { UserIcon, MailIcon, LockIcon, ArrowLeftIcon } from "../components/Icons";
+
+
+const SignupScreen = ({navigation }) => {
+    const [email, setEmail] = useState('');
+    const [name, setName] = useState('');
+    const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
+
+    const handleLogin = () => {
+        navigation.navigate('Welcome', { email: email });
+    };
+
+    return (
+        <ScrollView contentContainerStyle={styles.container}>
+            <View style={[styles.header, {marginBottom : 60}]}>
+                <TouchableOpacity onPress={() => navigation.goBack()}>
+                    <ArrowLeftIcon />
+                </TouchableOpacity>
+            </View>
+
+            <Text style = {styles.label}>Create Account</Text>
+            <Text style = {styles.subtitle}>Create a new acccount to get started and enjoy seamless access to our features</Text>
+            <View style = {styles.form}>
+                {/* inputs*/}
+                <CustomInput icon={<UserIcon />} placeholder="Name" isPassword={false} value={name} setValue={setName}/>
+                <CustomInput icon={<MailIcon />} placeholder="Email Address" isPassword={false} value = {email} setValue={setEmail}/>
+                <CustomInput icon={<LockIcon/>} placeholder="Password" isPassword={true} value={password} setValue={setPassword}/>
+                <CustomInput icon={<LockIcon/>} placeholder="Confirm Password" isPassword={true} value={confirmPassword} setValue={setConfirmPassword}/>
+
+               
+
+                <CustomButton title="Create Account" onPress={handleLogin} />
+
+                <AuthFooter
+                    message="Already have an account ?"
+                    actionText="Sign in here"
+                    onActionPress={() => navigation.navigate("Login")}
+
+                />
+
+            </View>
+
+        </ScrollView>     
+    )
+
     }
+
+export const styles = StyleSheet.create({
+    container : {
+            flexGrow : 1,
+            padding: 24,
+            backgroundColor: '#F9FAFB',
+    },
+    header: {
+        marginBottom: 20,
+        marginTop: 20,
+    },
+    subtitle: {
+        fontSize:14,
+        color: '#6B7280',
+        textAlign: 'center',
+        marginBottom: 30,
+        lineHeight: 20,
+    },
+    label : {
+        fontSize: 28,
+        fontWeight: 'bold',
+        color: '#111',
+        marginBottom: 8,
+        textAlign: 'center',
+
+    },
+    form: {
+        width: '100%',
+    },
+    
+    
+    
 
 });
 
@@ -509,13 +624,13 @@ export const styles = StyleSheet.create({
 export default SignupScreen;
 </file>
 
-<file path="src/screens/WelcomeScreen.tsx">
+<file path="src/screens/WelcomeScreen.jsx">
 import React from "react"
 import {View , Text , StyleSheet} from "react-native"
 import CustomButton from '../components/CustomButton'; 
 
 
-const WelcomeScreen = ({route , navigation}: any) => {
+const WelcomeScreen = ({route , navigation}) => {
 
     const {email} = route.params || {}
 
@@ -2146,141 +2261,6 @@ target 'rn_auth' do
 end
 </file>
 
-<file path="src/screens/loginScreen.tsx">
-import React , {useState}from "react"
-import {View , Text  , StyleSheet , TextInput ,Pressable ,TouchableOpacity,ScrollView} from "react-native"
-import CustomInput from "../components/CustomInput";
-import CustomButton from "../components/CustomButton";
-import AuthFooter from "../components/footer";
-
-
-const LoginScreen = ({navigation }: any) => {
-    const [isChecked, setIsChecked] = useState(false);
-    const [secureText, setSecureText] = useState(true);
-    const [email, setEmail] = useState('');
-
-    const handleLogin = () => {
-        // 2. Navigate AND pass the email object
-        navigation.navigate('Welcome', { email: email });
-    };
-
-    return (
-        <ScrollView contentContainerStyle={styles.container}>
-            <View style={[styles.header, {marginBottom : 60}]}>
-                 <Text style={styles.backArrow}>{"<"}</Text> 
-            </View>
-
-            <Text style = {styles.label}>Log in</Text>
-            <Text style = {styles.subtitle}>Enter your email and password to securely access your account and manage your services</Text>
-            <View style = {styles.form}>
-                {/* inputs*/}
-                <CustomInput icon="✉️" placeholder="Email Address" isPassword={false} value={email} setValue={setEmail} />
-                <CustomInput icon="🔒" placeholder="Password" isPassword={true}/>
-
-                {/*checkbox*/}
-                <View style={styles.row}>
-                    <Pressable 
-                        style={styles.rememberMe}
-                        onPress={() => setIsChecked(!isChecked)}
-                    >
-                        <View style={[styles.checkbox, isChecked && styles.checkboxChecked]} />
-                        <Text style={styles.rememberText}>Remember me</Text>
-                    </Pressable>
-                    <TouchableOpacity>
-                        <Text style={styles.forgot}>Forgot Password?</Text>
-                    </TouchableOpacity>
-                </View>
-
-                <CustomButton title="Login" onPress={handleLogin} />
-
-                <AuthFooter 
-                    message="Dont have an account?"
-                    actionText="Sign Up here"
-                    onActionPress={() => navigation.navigate('Signup')}
-                 />
-                
-
-            </View>
-
-        </ScrollView>     
-    )
-
-    }
-
-export const styles = StyleSheet.create({
-    container : {
-            flexGrow : 1,
-            padding: 24,
-            backgroundColor: '#F9FAFB',
-    },
-    header: {
-        marginBottom: 20,
-        marginTop: 20,
-    },
-    backArrow: {
-        fontSize: 24,
-        color: '#333',
-    },
-    subtitle: {
-        fontSize:14,
-        color: '#6B7280',
-        textAlign: 'center',
-        marginBottom: 30,
-        lineHeight: 20,
-    },
-    label : {
-        fontSize: 28,
-        fontWeight: 'bold',
-        color: '#111',
-        marginBottom: 8,
-        textAlign: 'center',
-
-    },
-    form: {
-        width: '100%',
-    },
-    
-    
-    row: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        marginBottom: 24,
-    },
-    rememberMe: {
-        flexDirection: 'row',
-        alignItems: 'center',
-    },
-    checkbox: {
-        width: 20,
-        height: 20,
-        borderWidth: 1,
-        borderColor: '#D1D5DB',
-        borderRadius: 4,
-        marginRight: 8,
-        backgroundColor: '#fff',
-    },
-    checkboxChecked: {
-        backgroundColor: '#2D8C5F', 
-        borderColor: '#2D8C5F',
-    },
-    rememberText: {
-        color: '#374151',
-        fontSize: 14,
-    },
-    forgot: {
-        fontWeight: '600',
-        color: '#111',
-        fontSize: 14,
-    },
-    
-});
-
-
-
-export default LoginScreen;
-</file>
-
 <file path=".eslintrc.js">
 module.exports = {
   root: true,
@@ -2548,7 +2528,7 @@ To learn more about React Native, take a look at the following resources:
   "compilerOptions": {
     "types": ["jest"],
   },
-  "include": ["**/*.ts", "**/*.tsx"],
+  "include": ["**/*.ts", "**/*.tsx", "src/components/CustomButton.jsx", "src/components/AuthFooter.jsx", "src/components/Icons.jsx", "src/components/CustomInput.jsx", "src/screens/WelcomeScreen.jsx", "src/screens/SignupScreen.jsx", "src/screens/loginScreen.jsx"],
   "exclude": ["**/node_modules", "**/Pods"]
 }
 </file>
@@ -2643,7 +2623,8 @@ export default App;
     "react": "19.2.0",
     "react-native": "0.83.1",
     "react-native-safe-area-context": "^5.6.2",
-    "react-native-screens": "^4.19.0"
+    "react-native-screens": "^4.19.0",
+    "react-native-svg": "^15.15.1"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",

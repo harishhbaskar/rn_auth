@@ -6,7 +6,7 @@ import AuthFooter from "../components/AuthFooter";
 import { UserIcon, MailIcon, LockIcon, ArrowLeftIcon } from "../components/Icons";
 
 
-const SignupScreen = ({navigation }:any ) => {
+const SignupScreen = ({navigation }) => {
     const [email, setEmail] = useState('');
     const [name, setName] = useState('');
     const [password, setPassword] = useState('');
@@ -16,14 +16,19 @@ const SignupScreen = ({navigation }:any ) => {
         navigation.navigate('Welcome', { email: email });
     };
 
-    return (
-        <ScrollView contentContainerStyle={styles.container}>
+    const renderHeader = () => {
+        return(
             <View style={[styles.header, {marginBottom : 60}]}>
                 <TouchableOpacity onPress={() => navigation.goBack()}>
                     <ArrowLeftIcon />
                 </TouchableOpacity>
             </View>
+        )
+    }
 
+    const renderContent = () => {
+        return(
+            <View>
             <Text style = {styles.label}>Create Account</Text>
             <Text style = {styles.subtitle}>Create a new acccount to get started and enjoy seamless access to our features</Text>
             <View style = {styles.form}>
@@ -33,19 +38,29 @@ const SignupScreen = ({navigation }:any ) => {
                 <CustomInput icon={<LockIcon/>} placeholder="Password" isPassword={true} value={password} setValue={setPassword}/>
                 <CustomInput icon={<LockIcon/>} placeholder="Confirm Password" isPassword={true} value={confirmPassword} setValue={setConfirmPassword}/>
 
-               
-
                 <CustomButton title="Create Account" onPress={handleLogin} />
 
-                <AuthFooter
+            </View>
+            </View>
+        )
+    }
+
+    const renderFooter = () => {
+        return(
+            <AuthFooter
                     message="Already have an account ?"
                     actionText="Sign in here"
                     onActionPress={() => navigation.navigate("Login")}
 
-                />
+            />
+        )
+    }
 
-            </View>
-
+    return (
+        <ScrollView contentContainerStyle={styles.container}>
+            {renderHeader()}
+            {renderContent()}
+            {renderFooter()}
         </ScrollView>     
     )
 

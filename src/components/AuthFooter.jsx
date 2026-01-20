@@ -2,13 +2,7 @@ import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 
 
-interface AuthFooterProps {
-  message: string;       
-  actionText: string;    
-  onActionPress: () => void; 
-}
-
-const AuthFooter = ({ message, actionText, onActionPress }: AuthFooterProps) => {
+const AuthFooter = ({ message, actionText, onActionPress }) => {
   return (
     <View style={styles.container}>
       {/* 1. Switch Account Link */}

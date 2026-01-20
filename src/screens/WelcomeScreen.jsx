@@ -3,7 +3,7 @@ import {View , Text , StyleSheet} from "react-native"
 import CustomButton from '../components/CustomButton'; 
 
 
-const WelcomeScreen = ({route , navigation}: any) => {
+const WelcomeScreen = ({route , navigation}) => {
 
     const {email} = route.params || {}
 

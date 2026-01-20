@@ -1,15 +1,9 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
 import { EyeIcon, EyeOffIcon } from './Icons';
-interface CustomInputProps {
-  icon: React.ReactNode;       
-  placeholder : string;    
-  isPassword : boolean;
-  value : string;
-  setValue : (text: string) => void;
-}
 
-const CustomInput = ({ icon, placeholder, isPassword ,value , setValue}:CustomInputProps) => {
+
+const CustomInput = ({ icon, placeholder, isPassword ,value , setValue}) => {
   
   const [secureText, setSecureText] = useState(isPassword);
 
