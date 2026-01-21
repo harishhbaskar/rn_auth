@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Colors } from '../../styles/globalStyles';
 import Icon from 'react-native-vector-icons/Feather';
-import Svg, { Circle } from 'react-native-svg'; // <--- Using the library you already have
+
 
 // Components
 import ScreenWrapper from '../../components/common/ScreenWrapper';
