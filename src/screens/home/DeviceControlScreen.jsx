@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import Svg, { Circle } from 'react-native-svg';
 import Icon from 'react-native-vector-icons/Feather';
-
 
 import ScreenWrapper from '../../components/common/ScreenWrapper';
 import Header from '../../components/common/Header';
@@ -14,46 +12,42 @@ const MAX_TEMP = 30;
 
 
 const Dial = ({ temp, setTemp }) => {
-  const size = 250;
-  const strokeWidth = 15;
-  const radius = (size - strokeWidth) / 2;
-  const circumference = radius * 2 * Math.PI;
-  const percentage = ((temp - MIN_TEMP) / (MAX_TEMP - MIN_TEMP)) * 100;
-  const strokeDashoffset = circumference - (percentage / 100) * circumference;
+  const TOTAL_TICKS = 36;
+  
+  const activeTicks = Math.floor(((temp - MIN_TEMP) / (MAX_TEMP - MIN_TEMP)) * TOTAL_TICKS);
 
   return (
     <View style={styles.dialContainer}>
-      <View style={{ width: size, height: size, alignItems: 'center', justifyContent: 'center' }}>
-        <Svg width={size} height={size}>
-          <Circle
-            stroke={Colors.border}
-            fill="none"
-            cx={size / 2}
-            cy={size / 2}
-            r={radius}
-            strokeWidth={strokeWidth}
-          />
-          <Circle
-            stroke={Colors.primary}
-            fill="none"
-            cx={size / 2}
-            cy={size / 2}
-            r={radius}
-            strokeWidth={strokeWidth}
-            strokeDasharray={`${circumference} ${circumference}`}
-            strokeDashoffset={strokeDashoffset}
-            strokeLinecap="round"
-            rotation="-90"
-            origin={`${size / 2}, ${size / 2}`}
-          />
-        </Svg>
+  
+      <View style={styles.dialCircle}>
+        {Array.from({ length: TOTAL_TICKS }).map((_, index) => {
+          const rotation = index * (360 / TOTAL_TICKS) - 90; 
+          const isActive = index < activeTicks;
 
-        <View style={styles.centerTextContainer}>
+          return (
+            <View
+              key={index}
+              style={[
+                styles.tickMark,
+                {
+                  backgroundColor: isActive ? Colors.primary : '#E5E7EB',
+                  transform: [
+                    { rotate: `${rotation}deg` },
+                    { translateX: 100 }, 
+                  ],
+                },
+              ]}
+            />
+          );
+        })}
+
+        {/* 2. Inner White Circle & Text */}
+        <View style={styles.innerDial}>
           <Text style={styles.tempText}>{temp}°C</Text>
-          <Text style={styles.statusText}>Heating</Text>
         </View>
       </View>
 
+      {/* 3. Controls Overlay */}
       <View style={styles.controlsOverlay}>
         <IconButton
           onPress={() => setTemp((t) => Math.max(MIN_TEMP, t - 1))}
@@ -67,6 +61,7 @@ const Dial = ({ temp, setTemp }) => {
     </View>
   );
 };
+
 
 
 const Toggles = () => {
@@ -150,12 +145,40 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     height: 300,
-    position: 'relative',
+    marginTop:-20,
+    marginBottom:10
   },
-  centerTextContainer: { position: 'absolute', alignItems: 'center' },
-  tempText: { fontSize: 48, fontWeight: 'bold', color: Colors.textPrimary },
-  statusText: { fontSize: 14, color: Colors.textSecondary, marginTop: 4 },
-
+  dialCircle: {
+    width: 250,
+    height: 250,
+    alignItems: 'center',
+    justifyContent: 'center',
+    position: 'relative',
+    marginBottom:30
+  },
+  tickMark: {
+    position: 'absolute',
+    width: 20, // Length of the tick
+    height: 8, // Thickness of the tick
+    borderRadius: 2,
+   
+  },
+  innerDial: {
+    width: 160,
+    height: 160,
+    borderRadius: 80,
+    backgroundColor: Colors.white,
+    alignItems: 'center',
+    justifyContent: 'center',
+    // Shadows
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 10,
+    elevation: 8,
+    zIndex: 5,
+  },
+  tempText: { fontSize: 42, fontWeight: 'bold', color: Colors.textPrimary },
   controlsOverlay: {
     flexDirection: 'row',
     width: '100%',
