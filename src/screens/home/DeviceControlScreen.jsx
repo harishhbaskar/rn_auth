@@ -10,7 +10,6 @@ import { Colors } from '../../styles/globalStyles';
 const MIN_TEMP = 16;
 const MAX_TEMP = 30;
 
-
 const Dial = ({ temp, setTemp }) => {
   const TOTAL_TICKS = 36;
   
@@ -33,7 +32,7 @@ const Dial = ({ temp, setTemp }) => {
                   backgroundColor: isActive ? Colors.primary : '#E5E7EB',
                   transform: [
                     { rotate: `${rotation}deg` },
-                    { translateX: 100 }, 
+                    { translateX: 130 }, 
                   ],
                 },
               ]}
@@ -135,6 +134,7 @@ const DeviceControlScreen = ({ navigation }) => {
         <Toggles />
         
         <FanControls fanSpeed={fanSpeed} setFanSpeed={setFanSpeed} />
+
       </View>
     </ScreenWrapper>
   );
@@ -144,13 +144,13 @@ const styles = StyleSheet.create({
   dialContainer: {
     alignItems: 'center',
     justifyContent: 'center',
-    height: 300,
+    height: 400,
     marginTop:-20,
     marginBottom:10
   },
   dialCircle: {
-    width: 250,
-    height: 250,
+    width: 400,
+    height: 400,
     alignItems: 'center',
     justifyContent: 'center',
     position: 'relative',
@@ -158,15 +158,15 @@ const styles = StyleSheet.create({
   },
   tickMark: {
     position: 'absolute',
-    width: 20, // Length of the tick
-    height: 8, // Thickness of the tick
+    width: 25, // Length of the tick
+    height: 10, // Thickness of the tick
     borderRadius: 2,
    
   },
   innerDial: {
-    width: 160,
-    height: 160,
-    borderRadius: 80,
+    width: 200,
+    height: 200,
+    borderRadius: 100,
     backgroundColor: Colors.white,
     alignItems: 'center',
     justifyContent: 'center',
