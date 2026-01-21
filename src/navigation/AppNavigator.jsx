@@ -7,8 +7,10 @@ import { Colors } from '../styles/globalStyles';
 
 import LoginScreen from '../screens/auth/LoginScreen';
 import SignupScreen from '../screens/auth/SignupScreen';
-
 import HomeScreen from '../screens/home/HomeScreen'; 
+import EnergyScreen from '../screens/home/EnergyScreen';
+
+import DeviceControlScreen from '../screens/home/DeviceControlScreen';
 
 const Placeholder = () => <View style={{flex:1, backgroundColor: Colors.background}} />;
 
@@ -77,7 +79,7 @@ function HomeTabs() {
 
       <Tab.Screen 
         name="Energy" 
-        component={Placeholder} 
+        component={EnergyScreen} 
         options={{ tabBarIcon: ({color}) => <Icon name="pie-chart" size={24} color={color} /> }}
       />
     </Tab.Navigator>
@@ -94,6 +96,8 @@ export default function AppNavigator() {
       
       {/* Main App */}
       <Stack.Screen name="MainApp" component={HomeTabs} />
+
+      <Stack.Screen name="DeviceControl" component={DeviceControlScreen} />
     </Stack.Navigator>
   );
 }

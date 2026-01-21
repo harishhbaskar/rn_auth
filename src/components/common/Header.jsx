@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet ,Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { ArrowLeftIcon } from '../Icons'; // Import from your wrapper now
 import Icon from 'react-native-vector-icons/Feather';
@@ -23,7 +23,11 @@ const Header = ({ title, showLogo = false, showBack = false, rightComponent }) =
                 {showLogo && (
                     <View style={styles.logoRow}>
                         {/* Placeholder Logo Icon */}
-                        <Icon name="aperture" size={28} color={Colors.primary} />
+                        <Image
+                            source={require('../../assets/images/logo.png')}
+                            style={styles.logo} 
+                            resizeMode="contain"
+                        />
                     </View>
                 )}
             </View>
@@ -69,6 +73,11 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         gap: 8,
+    },
+    logo: {
+        width: 50, // Adjust this depending on if your logo is wide or square
+        height: 32, 
+        borderRadius: 16,
     },
     title: {
         fontSize: 18,

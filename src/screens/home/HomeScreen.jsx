@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Switch } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Switch , Image } from 'react-native';
 import { Colors, globalStyles, Spacing } from '../../styles/globalStyles';
 import Icon from 'react-native-vector-icons/Feather';
-
 import ScreenWrapper from '../../components/common/ScreenWrapper';
 import Header from '../../components/common/Header';
 import Card from '../../components/common/Card';
@@ -53,7 +52,11 @@ const renderHeader = () => {
                 <View style={{flexDirection: 'row', gap: 10}}>
                     <IconButton icon={<Icon name="search" size={20} color={Colors.textPrimary} />} />
                     <IconButton icon={<Icon name="bell" size={20} color={Colors.textPrimary} />} />
-                    <View style={styles.avatar} />
+                    <Image 
+                        source={require('../../assets/images/avatar.webp')} 
+                        style={styles.avatar} 
+                        resizeMode="cover"
+                    />
                 </View>
             }
         />
@@ -81,19 +84,22 @@ const renderContent1 = () => {
             </View>
 
             <Card style={styles.cameraCard}>
+                <Image
+                    source={require('../../assets/images/living_room.webp')}
+                    style={{ width: '100%', height: '100%' }}
+                    resizeMode="cover"
+                />
                 <View style={styles.liveBadge}>
                     <Text style={styles.liveText}>• LIVE</Text>
                 </View>
-                <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
-                    <Icon name="image" size={40} color="#9CA3AF" />
-                </View>
+
             </Card>
         </View>
 
     )
 }
 
-const renderContent2 = () => {
+const renderContent2 = ({navigation}) => {
     return(
             <View style={styles.grid}>
                 
@@ -105,6 +111,18 @@ const renderContent2 = () => {
                         initialStatus={false} 
                     />
                 </View>
+
+                <TouchableOpacity
+                    style={styles.gridItem}
+                    onPress={() => navigation.navigate('DeviceControl')}
+                >
+                    <DeviceCard
+                        title="Living Room"
+                        subtitle="Thermostat"
+                        icon="thermometer"
+                        initialStatus={true}
+                    />
+                </TouchableOpacity>
                 
                 <View style={styles.gridItem}>
                     <DeviceCard 
@@ -114,6 +132,7 @@ const renderContent2 = () => {
                         initialStatus={false} 
                     />
                 </View>
+
                             
                 <TouchableOpacity style={styles.gridItem} onPress={() => navigation.navigate('DeviceControl')}>
                     <DeviceCard 
@@ -143,7 +162,7 @@ const HomeScreen = ({ navigation }) => {
 
         <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 100 }}>
             {renderContent1()}
-            {renderContent2()}
+            {renderContent2({navigation})}
         </ScrollView>
     </ScreenWrapper>
   );
