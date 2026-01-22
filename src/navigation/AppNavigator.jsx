@@ -9,6 +9,7 @@ import LoginScreen from '../screens/auth/LoginScreen';
 import SignupScreen from '../screens/auth/SignupScreen';
 import HomeScreen from '../screens/home/HomeScreen'; 
 import EnergyScreen from '../screens/home/EnergyScreen';
+import CarouselTestScreen from '../screens/CarouselTestScreen'
 
 import DeviceControlScreen from '../screens/home/DeviceControlScreen';
 
@@ -98,6 +99,7 @@ export default function AppNavigator() {
       <Stack.Screen name="MainApp" component={HomeTabs} />
 
       <Stack.Screen name="DeviceControl" component={DeviceControlScreen} />
+      <Stack.Screen name="CarouselTest" component={CarouselTestScreen} />
     </Stack.Navigator>
   );
 }

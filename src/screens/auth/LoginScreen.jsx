@@ -25,11 +25,15 @@ const LoginScreen = ({navigation }) => {
         return (
             <View style={globalStyles.header}>
                 <TouchableOpacity>
-                    <ArrowLeftIcon/>
+                    <ArrowLeftIcon />
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => navigation.navigate('CarouselTest')}>
+                    <Text style={{ color: Colors.primary }}>TEST CAROUSEL</Text>
                 </TouchableOpacity>
             </View>
+
         )
-        
+
     }
 
 
