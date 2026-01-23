@@ -28,7 +28,6 @@ const SlidingCard = ({ item, index, scrollX }) => {
       (index + 1) * ITEM_WIDTH,
     ];
 
-    
     const translateY = interpolate(
       scrollX.value,
       inputRange,
@@ -58,8 +57,7 @@ const SlidingCard = ({ item, index, scrollX }) => {
   });
 
   return (
-    <Animated.View style={[styles.cardContainer, animatedStyle]}>
-      
+    <Animated.View style={[styles.cardContainer, animatedStyle]}>   
       <Image source={item.img} style={styles.image} />
       <View style={styles.textDetails}>
         <Text style={styles.cardTitle}>{item.title}</Text>
@@ -80,15 +78,13 @@ const PaginationDots = ({ data, scrollX }) => {
             (index + 1) * ITEM_WIDTH,
           ];
 
-          
           const dotWidth = interpolate(
             scrollX.value,
             inputRange,
             [8, 20, 8],
             Extrapolation.CLAMP
           );
-
-          
+  
           const opacity = interpolate(
             scrollX.value,
             inputRange,
