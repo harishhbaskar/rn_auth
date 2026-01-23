@@ -30,6 +30,9 @@ const LoginScreen = ({navigation }) => {
                 <TouchableOpacity onPress={() => navigation.navigate('CarouselTest')}>
                     <Text style={{ color: Colors.primary }}>TEST CAROUSEL</Text>
                 </TouchableOpacity>
+                <TouchableOpacity onPress={() => navigation.navigate('DataGrid')}>
+                    <Text style={{color:Colors.primary}}>TEST GRID</Text>
+                </TouchableOpacity>
             </View>
 
         )

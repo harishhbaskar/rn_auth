@@ -73,3 +73,9 @@ yarn-error.log
 !.yarn/releases
 !.yarn/sdks
 !.yarn/versions
+
+# Repomix
+repomix/
+repomix-output/
+repomix.json
+repomix.lock
