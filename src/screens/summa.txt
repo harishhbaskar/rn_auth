@@ -1,5 +1,0 @@
-const DATA = [
-    { id: '1', title: 'Renter', desc: 'Find your preferences here by exploring our unlimited resources', img: require('../assets/images/renter.jpg') },
-    { id: '2', title: 'My Home', desc: 'Find your preferences here by exploring our unlimited resources', img: require('../assets/images/myhome.jpg') },
-    { id: '3', title: 'Seller', desc: 'Welcom back start to manage your property from anywhere in the world', img: require('../assets/images/seller.png') },
-];
