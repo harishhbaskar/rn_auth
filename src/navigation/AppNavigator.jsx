@@ -10,9 +10,8 @@ import SignupScreen from '../screens/auth/SignupScreen';
 import HomeScreen from '../screens/home/HomeScreen'; 
 import EnergyScreen from '../screens/home/EnergyScreen';
 import CarouselTestScreen from '../screens/CarouselTestScreen';
-import DataGrid from "../screens/DataGrid";
-
 import DeviceControlScreen from '../screens/home/DeviceControlScreen';
+import DirectoryNavigator from './DirectoryNavigation'
 
 const Placeholder = () => <View style={{flex:1, backgroundColor: Colors.background}} />;
 
@@ -84,6 +83,8 @@ function HomeTabs() {
         component={EnergyScreen} 
         options={{ tabBarIcon: ({color}) => <Icon name="pie-chart" size={24} color={color} /> }}
       />
+
+       
     </Tab.Navigator>
   );
 }
@@ -101,7 +102,8 @@ export default function AppNavigator() {
 
       <Stack.Screen name="DeviceControl" component={DeviceControlScreen} />
       <Stack.Screen name="CarouselTest" component={CarouselTestScreen} />
-      <Stack.Screen name="DataGrid" component={DataGrid}/>
+      
+      <Stack.Screen name="DataGrid" component={DirectoryNavigator}/>
     </Stack.Navigator>
   );
 }
