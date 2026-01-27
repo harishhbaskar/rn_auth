@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
     Text, Image, View, StyleSheet,
-    FlatList, TextInput, TouchableOpacity, Dimensions
+    FlatList, TextInput, TouchableOpacity, Dimensions, ActivityIndicator
 } from "react-native";
 import Card from "../components/common/Card";
 import { useDispatch, useSelector } from 'react-redux';
@@ -9,38 +9,52 @@ import { processAndSetMembers } from '../store/employeeSlice';
 import { Colors, Spacing } from '../styles/globalStyles'; 
 
 const { width } = Dimensions.get("window");
+const CARD_HEIGHT = 200;
 
 const DataGrid = () => {
     const [filteredData, setFilteredData] = useState([]);
     const [searchQuery, setSearchQuery] = useState("");
+    const [debouncedQuery, setDebouncedQuery] = useState("");
+    const [loading, setLoading] = useState(true);
 
     const dispatch = useDispatch();
     const { allMembers, categories } = useSelector(state => state.employees); 
 
+    
     const getData = async () => {
+        setLoading(true);
         try {
             const response = await fetch("https://69724a6f32c6bacb12c67b5f.mockapi.io/employees");
             const json = await response.json();
             dispatch(processAndSetMembers(json)); 
         } catch (error) {
             console.error("Fetch error:", error);
+        } finally {
+            setLoading(false);
         }
     };
 
-    useEffect(() => { getData(); }, []);
-
+    
     useEffect(() => {
-        setFilteredData(allMembers);
-    }, [allMembers]);
+        const handler = setTimeout(() => {
+            setDebouncedQuery(searchQuery);
+        }, 500);
 
-    const handleSearch = (text) => {
-        setSearchQuery(text);
+        return () => clearTimeout(handler);
+    }, [searchQuery]);
+
+    
+    useEffect(() => {
         const filtered = allMembers.filter(item => 
-            item.name.toLowerCase().includes(text.toLowerCase()) ||
-            item.title.toLowerCase().includes(text.toLowerCase())
+            item.name.toLowerCase().includes(debouncedQuery.toLowerCase()) ||
+            item.title.toLowerCase().includes(debouncedQuery.toLowerCase())
         );
         setFilteredData(filtered);
-    };
+    }, [debouncedQuery, allMembers]);
+
+    useEffect(() => { getData(); }, []);
+
+    const handleSearch = (text) => setSearchQuery(text);
 
     const sortData = (criterion) => {
         const sorted = [...filteredData].sort((a, b) =>
@@ -49,15 +63,23 @@ const DataGrid = () => {
         setFilteredData(sorted);
     };
 
-    const getGroupName = (memberId) => {
+    const getGroupName = useCallback((memberId) => {
         if (!categories) return 'Other';
         const group = Object.keys(categories).find(key => 
             categories[key].includes(memberId)
         );
         return group || 'Other';
-    };
+    }, [categories]);
 
-    const renderItem = ({ item }) => (
+    
+    const getItemLayout = (data, index) => ({
+        length: CARD_HEIGHT,
+        offset: CARD_HEIGHT * Math.floor(index / 2),
+        index,
+    });
+
+    
+    const renderItem = useCallback(({ item }) => (
         <View style={styles.cardWrapper}>
             <Card>
                 <View style={styles.gridContent}>
@@ -69,7 +91,7 @@ const DataGrid = () => {
                 </View>
             </Card>
         </View>
-    );
+    ), [getGroupName]);
 
     return (
         <View style={styles.container}>
@@ -95,20 +117,34 @@ const DataGrid = () => {
                 </View>
             </View>
 
-            <FlatList
-                data={filteredData}
-                renderItem={renderItem}
-                keyExtractor={(item) => item.id.toString()}
-                numColumns={2}
-                contentContainerStyle={styles.listContainer}
-                ListEmptyComponent={<Text style={styles.emptyText}>No employees found.</Text>}
-            />
+            {loading ? (
+                <View style={styles.center}>
+                    <ActivityIndicator size="large" color={Colors.primary} />
+                </View>
+            ) : (
+                <FlatList
+                    data={filteredData}
+                    renderItem={renderItem}
+                    keyExtractor={(item) => item.id.toString()}
+                    numColumns={2}
+                    contentContainerStyle={styles.listContainer}
+                    initialNumToRender={8}
+                    windowSize={5}
+                    maxToRenderPerBatch={10}
+                    removeClippedSubviews={true} 
+                    getItemLayout={getItemLayout}
+                    ListEmptyComponent={
+                        <Text style={styles.emptyText}>No employees found.</Text>
+                    }
+                />
+            )}
         </View>
     );
 };
 
 const styles = StyleSheet.create({
     container: { flex: 1, backgroundColor: Colors.background }, 
+    center: { flex: 1, justifyContent: 'center', alignItems: 'center' },
     header: { padding: 15, backgroundColor: Colors.white, borderBottomWidth: 1, borderBottomColor: Colors.border },
     headerTitle: { fontSize: 22, fontWeight: 'bold', marginBottom: 10, color: Colors.textPrimary },
     searchBar: {
