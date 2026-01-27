@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { View } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 import { Colors } from '../styles/globalStyles';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { ActivityIndicator , View} from 'react-native';
 
 import LoginScreen from '../screens/auth/LoginScreen';
 import SignupScreen from '../screens/auth/SignupScreen';
@@ -66,7 +67,7 @@ function HomeTabs() {
                     alignItems: 'center', justifyContent: 'center',
                     marginBottom: 0, elevation: 5 
                 }}>
-                    <Icon name="plus" size={24} color="#fff" />
+                    <Icon name="plus" size={24} color={Colors.white} />
                 </View>
             )
         }}
@@ -91,8 +92,32 @@ function HomeTabs() {
 
 
 export default function AppNavigator() {
+  const [isLoading, setIsLoading] = useState(true);
+  const [userToken, setUserToken] = useState(null);
+
+  useEffect(() => {
+    const checkToken = async () => {
+      try {
+        const token = await AsyncStorage.getItem('userToken');
+        setUserToken(token);
+      } catch (e) {
+        console.log("Failed to load token");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    checkToken();
+  }, []);
+
+  if (isLoading) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <ActivityIndicator size="large" color={Colors.primary} />
+      </View>
+    );
+  }
   return (
-    <Stack.Navigator initialRouteName="Login" screenOptions={{ headerShown: false }}>
+    <Stack.Navigator initialRouteName={userToken ? "MainApp" : "Login"} screenOptions={{ headerShown: false }}>
       {/* Auth Flow */}
       <Stack.Screen name="Login" component={LoginScreen} />
       <Stack.Screen name="Signup" component={SignupScreen} />
