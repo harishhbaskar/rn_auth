@@ -5,10 +5,18 @@ import Icon from 'react-native-vector-icons/Feather';
 import { globalStyles } from '../styles/globalStyles';
 import { Colors, Spacing, Fonts } from '../styles/tripTheme';
 import CategoryTabs from '../components/trip/CategoryTabs';
-import HeroCarousel from '../components/trip/HeroCarousel';
+import StackCarousel from '../components/trip/StackCarousel';
+import HeroCard from '../components/trip/HeroCard';
 
+const DATA = [
+  { id: '1', city: 'Rio de Janeiro', country: 'Brazil', rating: '5.0', reviews: '143', image: require('../assets/images/mountain.jpg') },
+  { id: '2', city: 'Tokyo', country: 'Japan', rating: '4.9', reviews: '210', image: require('../assets/images/sunset.jpg') },
+  { id: '3', city: 'Paris', country: 'France', rating: '4.8', reviews: '98', image: require('../assets/images/airport.jpg') },
+];
 
 const TripHomeScreen = () => {
+    const renderHeroCard = (item) => <HeroCard item={item} />;
+    
     return (
         <SafeAreaView style={globalStyles.safeArea}>
             <ScrollView contentContainerStyle={[globalStyles.container, { paddingBottom: 100 }]}>
@@ -38,7 +46,10 @@ const TripHomeScreen = () => {
                 <Text style={styles.sectionTitle}>Select your next trip</Text>
                 <CategoryTabs />
                 <View style={styles.carouselWrapper}>
-                    <HeroCarousel />
+                    <StackCarousel
+                        data={DATA}
+                        renderItem={renderHeroCard}
+                    />
                 </View>
             </ScrollView>
 
@@ -108,8 +119,7 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
     carouselWrapper: {
-        marginTop: Spacing.l,
-        marginHorizontal: -Spacing.m,
+        // marginTop: Spacing.s,
     },
 
 });

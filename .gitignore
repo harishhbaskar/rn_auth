@@ -81,3 +81,15 @@ repomix.json
 repomix.lock
 
 .env
+
+# node.js
+**/node_modules/
+npm-debug.log
+yarn-error.log
+
+# Android/iOS
+rn_auth/android/build/
+rn_auth/ios/Pods/
+
+# Environment
+.env

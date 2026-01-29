@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import {
   View,
   Text,
@@ -16,9 +16,9 @@ import { Colors } from '../../styles/tripTheme';
 const { width } = Dimensions.get('window');
 const CARD_WIDTH = width * 0.75;
 
-const HeroCard = ({ item }) => {
+const HeroCard = memo(({ item }) => {
   const navigation = useNavigation();
-  
+
   return (
     <View style={styles.card}>
       <ImageBackground
@@ -58,19 +58,19 @@ const HeroCard = ({ item }) => {
       </ImageBackground>
     </View>
   );
-};
+});
 
 const styles = StyleSheet.create({
   card: {
-    width: CARD_WIDTH,
+    width: '100%',
     height: 420,
     borderRadius: 40,
     overflow: 'hidden',
-    backgroundColor: '#000',
-    elevation: 8,
+    // Removed elevation and black background to stop the flickering
   },
   image: {
     flex: 1,
+    
   },
   gradient: {
     flex: 1,
