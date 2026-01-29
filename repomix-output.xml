@@ -104,38 +104,27 @@ ios/
   Podfile
 src/
   assets/
-    fonts/
-      Poppins-Black.ttf
-      Poppins-BlackItalic.ttf
-      Poppins-Bold.ttf
-      Poppins-BoldItalic.ttf
-      Poppins-ExtraBold.ttf
-      Poppins-ExtraBoldItalic.ttf
-      Poppins-ExtraLight.ttf
-      Poppins-ExtraLightItalic.ttf
-      Poppins-Italic.ttf
-      Poppins-Light.ttf
-      Poppins-LightItalic.ttf
-      Poppins-Medium.ttf
-      Poppins-MediumItalic.ttf
-      Poppins-Regular.ttf
-      Poppins-SemiBold.ttf
-      Poppins-SemiBoldItalic.ttf
-      Poppins-Thin.ttf
-      Poppins-ThinItalic.ttf
     images/
+      airport.jpg
       avatar.webp
       living_room.webp
       logo.png
+      mountain.jpg
+      mountain2.jpg
       myhome.jpg
       renter.jpg
       seller.png
+      sunset.jpg
   components/
     common/
       Card.jsx
       Header.jsx
       IconButton.jsx
       ScreenWrapper.jsx
+    trip/
+      CategoryTabs.jsx
+      HeroCard.jsx
+      HeroCarousel.jsx
     AuthFooter.jsx
     CustomButton.jsx
     CustomInput.jsx
@@ -151,14 +140,18 @@ src/
       DeviceControlScreen.jsx
       EnergyScreen.jsx
       HomeScreen.jsx
+    BookingScreen.jsx
     CarouselTestScreen.jsx
     DataGrid.jsx
     GroupsScreen.jsx
+    TripDetailsScreen.jsx
+    TripHomeScreen.jsx
   store/
     employeeSlice.js
     store.js
   styles/
     globalStyles.js
+    tripTheme.js
 .eslintrc.js
 .gitignore
 .prettierrc.js
@@ -178,6 +171,783 @@ tsconfig.json
 
 <files>
 This section contains the contents of the repository's files.
+
+<file path="src/components/trip/CategoryTabs.jsx">
+import React from 'react';
+import { ScrollView, TouchableOpacity, Text, StyleSheet } from 'react-native';
+import { Colors, Spacing, Fonts } from '../../styles/tripTheme';
+
+const categories = ['Asia', 'Europe', 'South America', 'North America'];
+
+const CategoryTabs = () => {
+  return (
+    <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.scroll}>
+      {categories.map((cat, index) => {
+        const isActive = cat === 'South America'; 
+        return (
+          <TouchableOpacity key={index} style={[styles.tab, isActive && styles.activeTab]}>
+            <Text style={[styles.tabText, isActive && styles.activeTabText]}>{cat}</Text>
+          </TouchableOpacity>
+        );
+      })}
+    </ScrollView>
+  );
+};
+
+const styles = StyleSheet.create({
+  scroll: { marginVertical: Spacing.m, paddingLeft: Spacing.m },
+  tab: {
+    paddingHorizontal: 22, 
+    paddingVertical:11,
+    borderRadius: 999,
+    backgroundColor: Colors.white,
+    marginRight: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  activeTab: { backgroundColor: Colors.black },
+  tabText: { color: Colors.textSecondary, fontFamily: Fonts.medium, },
+  activeTabText: { color: Colors.white },
+});
+
+export default CategoryTabs;
+</file>
+
+<file path="src/components/trip/HeroCard.jsx">
+import React from 'react';
+import {
+  View,
+  Text,
+  ImageBackground,
+  StyleSheet,
+  TouchableOpacity,
+  Dimensions,
+} from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
+import Icon from 'react-native-vector-icons/Feather';
+import { Fonts } from '../../styles/tripTheme';
+import { useNavigation } from '@react-navigation/native';
+
+const { width } = Dimensions.get('window');
+const CARD_WIDTH = width * 0.75;
+
+const HeroCard = ({ item }) => {
+  const navigation = useNavigation();
+  
+  return (
+    <View style={styles.card}>
+      <ImageBackground
+        source={item.image}
+        style={styles.image}
+        imageStyle={{ borderRadius: 40 }}
+      >
+        <LinearGradient
+          colors={['transparent', 'rgba(0,0,0,0.85)']}
+          style={styles.gradient}
+        >
+          <TouchableOpacity style={styles.heartButton}>
+            <Icon name="heart" size={20} color="#fff" />
+          </TouchableOpacity>
+
+          <View>
+            <Text style={styles.country}>{item.country}</Text>
+            <Text style={styles.city}>{item.city}</Text>
+
+            <View style={styles.statsRow}>
+              <Icon name="star" size={14} color="#FFD700" />
+              <Text style={styles.rating}> {item.rating}</Text>
+              <Text style={styles.reviews}> • {item.reviews}</Text>
+            </View>
+
+            <TouchableOpacity
+              style={styles.actionBar}
+              onPress={() => navigation.navigate('TripDetails')}
+            >
+              <Text style={styles.seeMore}>See more</Text>
+              <View style={styles.arrow}>
+                <Icon name="chevron-right" size={20} color="#000" />
+              </View>
+            </TouchableOpacity>
+          </View>
+        </LinearGradient>
+      </ImageBackground>
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  card: {
+    width: CARD_WIDTH,
+    height: 420,
+    borderRadius: 40,
+    overflow: 'hidden',
+    backgroundColor: '#000',
+    elevation: 8,
+  },
+  image: {
+    flex: 1,
+  },
+  gradient: {
+    flex: 1,
+    padding: 25,
+    justifyContent: 'space-between',
+  },
+  heartButton: {
+    alignSelf: 'flex-end',
+    backgroundColor: 'rgba(255,255,255,0.3)',
+    padding: 10,
+    borderRadius: 25,
+  },
+  country: {
+    color: '#fff',
+    opacity: 0.8,
+    fontFamily: Fonts.regular,
+  },
+  city: {
+    color: '#fff',
+    fontSize: 32,
+    fontFamily: Fonts.bold,
+  },
+  statsRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  rating: {
+    color: '#fff',
+    fontWeight: 'bold',
+  },
+  reviews: {
+    color: '#fff',
+    opacity: 0.7,
+  },
+  actionBar: {
+    height: 65,
+    backgroundColor: 'rgba(255,255,255,0.15)',
+    borderRadius: 35,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  seeMore: {
+    color: '#fff',
+    fontWeight: '600',
+  },
+  arrow: {
+    position: 'absolute',
+    right: 8,
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+});
+
+export default HeroCard;
+</file>
+
+<file path="src/components/trip/HeroCarousel.jsx">
+import React, { useRef } from 'react';
+import {
+    View,
+    Animated,
+    FlatList,
+    Dimensions,
+    StyleSheet,
+} from 'react-native';
+import HeroCard from './HeroCard';
+import { Spacing } from '../../styles/tripTheme';
+
+const { width } = Dimensions.get('window');
+
+const CARD_WIDTH = width * 0.75;
+const SPACING = -30; // overlap
+const SNAP_INTERVAL = CARD_WIDTH + SPACING;
+
+
+
+const DATA = [
+    {
+        id: '2',
+        country: 'Brazil',
+        city: 'Amazon',
+        rating: '4.8',
+        reviews: '98 reviews',
+        image: require('../../assets/images/mountain2.jpg'),
+    },
+    {
+        id: '1',
+        country: 'Brazil',
+        city: 'Rio de Janeiro',
+        rating: '5.0',
+        reviews: '143 reviews',
+        image: require('../../assets/images/mountain.jpg'),
+    },
+    {
+        id: '3',
+        country: 'Brazil',
+        city: 'Sunset Hills',
+        rating: '4.9',
+        reviews: '120 reviews',
+        image: require('../../assets/images/sunset.jpg'),
+    },
+];
+
+const HeroCarousel = () => {
+    const scrollX = useRef(new Animated.Value(0)).current;
+    const listRef = useRef(null);
+
+    return (
+        <Animated.FlatList
+            ref={listRef}
+            data={DATA}
+            horizontal
+            snapToInterval={SNAP_INTERVAL}
+            decelerationRate="fast"
+            showsHorizontalScrollIndicator={false}
+            // contentOffset={{ x: SNAP_INTERVAL / 2 - SPACING, y: 0 }}
+            contentContainerStyle={{
+                paddingHorizontal:
+                    (width - CARD_WIDTH) / 2 + Math.abs(SPACING) / 2,
+            }}
+            onScroll={Animated.event(
+                [{ nativeEvent: { contentOffset: { x: scrollX } } }],
+                { useNativeDriver: true }
+            )}
+            renderItem={({ item, index }) => {
+                const inputRange = [
+                    (index - 1) * SNAP_INTERVAL,
+                    index * SNAP_INTERVAL,
+                    (index + 1) * SNAP_INTERVAL,
+                ];
+
+                const scale = scrollX.interpolate({
+                    inputRange,
+                    outputRange: [0.9, 1, 0.9],
+                    extrapolate: 'clamp',
+                });
+
+                const translateY = scrollX.interpolate({
+                    inputRange,
+                    outputRange: [30, 0, 30],
+                    extrapolate: 'clamp',
+                });
+
+                const zIndex = scrollX.interpolate({
+                    inputRange,
+                    outputRange: [0, 10, 0],
+                    extrapolate: 'clamp',
+                });
+
+                const elevation = scrollX.interpolate({
+                    inputRange,
+                    outputRange: [0, 10, 0],
+                    extrapolate: 'clamp',
+                });
+
+                return (
+                    <Animated.View
+                        style={{
+                            marginRight: SPACING,
+                            transform: [{ scale }, { translateY }],
+                            zIndex,          
+                            elevation,       
+                        }}
+                    >
+                        <HeroCard item={item} />
+                    </Animated.View>
+                );
+            }}
+
+        />
+    );
+};
+
+export default HeroCarousel;
+</file>
+
+<file path="src/screens/BookingScreen.jsx">
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Image, Dimensions } from 'react-native';
+import Icon from 'react-native-vector-icons/Feather';
+import { Colors, Spacing, Fonts } from '../styles/tripTheme';
+import { useNavigation } from '@react-navigation/native';
+
+const { width } = Dimensions.get('window');
+
+const BookingScreen = ({ navigation }) => {
+    const [activeTab, setActiveTab] = useState('Tour schedule');
+    
+    const [expandedDay, setExpandedDay] = useState(1);
+
+    const itineraryData = [
+        {
+            id: 1,
+            day: 'Day 1',
+            title: 'Arrival to Rio de Janeiro',
+            image: require('../assets/images/airport.jpg'),
+            details: [
+                { time: 'Morning', desc: 'Arrive in Rio de Janeiro and transfer to your hotel' },
+                { time: 'Afternoon', desc: 'Free time to relax or explore the nearby area' },
+                { time: 'Evening', desc: 'Welcome dinner at a traditional Brazilian restaurant' }
+            ]
+        },
+        {
+            id: 2,
+            day: 'Day 2',
+            title: 'Rio de Janeiro Highlights',
+            image: require('../assets/images/mountain.jpg'),
+            details: [
+                { time: 'Morning', desc: 'Visit the Christ the Redeemer statue' },
+                { time: 'Afternoon', desc: 'Cable car ride to Sugarloaf Mountain' }
+            ]
+        }
+    ];
+
+    return (
+        <View style={styles.container}>
+            
+            <View style={styles.header}>
+                <TouchableOpacity onPress={() => navigation.goBack()} style={styles.iconBtn}>
+                    <Icon name="chevron-left" size={24} color={Colors.black} />
+                </TouchableOpacity>
+                <View style={styles.headerTitleContainer}>
+                    <Text style={styles.headerTitle}>Iconic Brazil</Text>
+                    <Text style={styles.headerSubtitle}>Wed, Oct 21 – Sun, Nov 1</Text>
+                </View>
+                <TouchableOpacity style={styles.iconBtn}>
+                    <Icon name="heart" size={20} color={Colors.black} />
+                </TouchableOpacity>
+            </View>
+
+            
+            <View style={styles.tabWrapper}>
+                <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.tabScroll}>
+                    {['Tour schedule', 'Accommodation', 'Booking details'].map((tab) => (
+                        <TouchableOpacity 
+                            key={tab} 
+                            onPress={() => setActiveTab(tab)}
+                            style={[styles.tab, activeTab === tab && styles.activeTab]}
+                        >
+                            <Text style={[styles.tabText, activeTab === tab && styles.activeTabText]}>{tab}</Text>
+                        </TouchableOpacity>
+                    ))}
+                </ScrollView>
+            </View>
+
+            
+            <ScrollView 
+                showsVerticalScrollIndicator={false} 
+                contentContainerStyle={styles.scrollContent}
+            >
+                <View style={styles.handle} />
+                <Text style={styles.sectionTitle}>8-Days Brazil Adventure</Text>
+
+                {itineraryData.map((item) => {
+                    const isExpanded = expandedDay === item.id;
+                    return (
+                        <TouchableOpacity 
+                            key={item.id} 
+                            activeOpacity={0.9}
+                            onPress={() => setExpandedDay(isExpanded ? null : item.id)}
+                            style={styles.itineraryCard}
+                        >
+                            <View style={styles.cardHeader}>
+                                
+                                <Image source={item.image} style={styles.dayThumb} />
+                                <View style={styles.dayTitleBox}>
+                                    <Text style={styles.dayLabel}>{item.day}</Text>
+                                    <Text style={styles.dayTitle}>{item.title}</Text>
+                                </View>
+                                <Icon 
+                                    name={isExpanded ? "chevron-up" : "chevron-down"} 
+                                    size={20} 
+                                    color={Colors.black} 
+                                />
+                            </View>
+
+                            
+                            {isExpanded && (
+                                <View style={styles.expandedContent}>
+                                    {item.details.map((detail, idx) => (
+                                        <View key={idx} style={styles.detailItem}>
+                                            <Text style={styles.timeLabel}>{detail.time}</Text>
+                                            <Text style={styles.detailText}>{detail.desc}</Text>
+                                        </View>
+                                    ))}
+                                </View>
+                            )}
+                        </TouchableOpacity>
+                    );
+                })}
+            </ScrollView>
+
+            
+            <View style={styles.buttonContainer}>
+                <TouchableOpacity style={styles.bookBtn}>
+                    <Text style={styles.bookBtnText}>Book a tour</Text>
+                </TouchableOpacity>
+            </View>
+        </View>
+    );
+};
+
+const styles = StyleSheet.create({
+    container: { flex: 1, backgroundColor: '#fff' },
+    header: { 
+        flexDirection: 'row', 
+        alignItems: 'center', 
+        justifyContent: 'space-between', 
+        paddingHorizontal: 20, 
+        paddingTop: 60, 
+        paddingBottom: 20,
+        backgroundColor: '#fff' 
+    },
+    iconBtn: { padding: 8 },
+    headerTitleContainer: { alignItems: 'center' },
+    headerTitle: { fontSize: 18, fontFamily: Fonts.bold, color: Colors.black },
+    headerSubtitle: { fontSize: 12, color: Colors.textSecondary, marginTop: 2 },
+    
+    tabWrapper: { backgroundColor: '#fff', paddingBottom: 15 },
+    tabScroll: { paddingHorizontal: 20, gap: 10 },
+    tab: { paddingHorizontal: 20, paddingVertical: 10, borderRadius: 25, backgroundColor: '#F3F4F6' },
+    activeTab: { backgroundColor: Colors.black },
+    tabText: { color: Colors.textSecondary, fontWeight: '600' },
+    activeTabText: { color: '#fff' },
+
+    scrollContent: { 
+        padding: 20, 
+        paddingBottom: 150, 
+        backgroundColor: '#fff', 
+        borderTopLeftRadius: 40, 
+        borderTopRightRadius: 40,
+        marginTop: -20,
+        borderWidth: 1,
+        borderColor: '#F3F4F6',
+    },
+    handle: { width: 40, height: 4, backgroundColor: '#E5E7EB', borderRadius: 2, alignSelf: 'center', marginBottom: 20 },
+    sectionTitle: { fontSize: 22, fontFamily: Fonts.bold, marginBottom: 20, color: Colors.black },
+    
+    itineraryCard: { 
+        backgroundColor: '#fff', 
+        borderRadius: 25, 
+        padding: 20, 
+        marginBottom: 15, 
+        borderWidth: 1, 
+        borderColor: '#F3F4F6',
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.05,
+        shadowRadius: 10,
+        elevation: 2
+    },
+    cardHeader: { flexDirection: 'row', alignItems: 'center' },
+    dayThumb: { 
+        width: 70, 
+        height: 70, 
+        borderRadius: 15 
+    },
+    dayTitleBox: { flex: 1, marginLeft: 15 },
+    dayLabel: { fontSize: 12, color: Colors.textSecondary, fontFamily: Fonts.regular },
+    dayTitle: { fontSize: 16, fontWeight: 'bold', color: Colors.black, marginTop: 2 },
+    
+    expandedContent: { 
+        marginTop: 20,
+        borderTopWidth: 1,
+        borderTopColor: '#F9FAFB',
+        paddingTop: 20
+    },
+    detailItem: { marginBottom: 15 },
+    timeLabel: { fontSize: 13, color: '#9CA3AF', fontFamily: Fonts.medium, marginBottom: 4 },
+    detailText: { fontSize: 14, color: Colors.black, lineHeight: 22, fontFamily: Fonts.regular },
+
+    buttonContainer: {
+        position: 'absolute',
+        bottom: 0,
+        left: 0,
+        right: 0,
+        paddingHorizontal: 20,
+        paddingBottom: 40,
+        backgroundColor: 'rgba(255,255,255,0.8)',
+    },
+    bookBtn: { 
+        backgroundColor: Colors.black, 
+        height: 65, 
+        borderRadius: 35, 
+        justifyContent: 'center', 
+        alignItems: 'center',
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 10 },
+        shadowOpacity: 0.2,
+        shadowRadius: 15,
+        elevation: 8
+    },
+    bookBtnText: { color: '#fff', fontSize: 18, fontWeight: 'bold' }
+});
+
+export default BookingScreen;
+</file>
+
+<file path="src/screens/TripDetailsScreen.jsx">
+import React from 'react';
+import { View, Text, Image, ScrollView, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
+import Icon from 'react-native-vector-icons/Feather';
+import { Colors, Spacing, Fonts } from '../styles/tripTheme';
+import { useNavigation } from '@react-navigation/native';
+
+const { width } = Dimensions.get('window');
+
+
+const TripDetailsScreen = ({ navigation }) => {
+
+    
+    return (
+        <View style={styles.container}>
+            
+            <View style={styles.imageContainer}>
+                <Image
+                    source={require('../assets/images/mountain.jpg')}
+                    style={styles.headerImage}
+                />
+                <TouchableOpacity style={styles.backBtn} onPress={() => navigation.goBack()}>
+                    <Icon name="chevron-left" size={24} color={Colors.black} />
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.heartBtn}>
+                    <Icon name="heart" size={20} color={Colors.black} />
+                </TouchableOpacity>
+            </View>
+
+            
+            <View style={styles.contentCard}>
+                <View style={styles.handle} />
+                <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 40 }}>
+
+                    <View style={styles.titleRow}>
+                        <Text style={styles.cityTitle}>Rio de Janeiro</Text>
+                        <View style={styles.ratingBox}>
+                            <Icon name="star" size={14} color="#FFD700" />
+                            <Text style={styles.ratingText}>5.0</Text>
+                        </View>
+                    </View>
+
+                    <View style={styles.locationRow}>
+                        <Icon name="map-pin" size={14} color={Colors.primary} />
+                        <Text style={styles.countryText}>Brazil</Text>
+                        <Text style={styles.reviewsText}>143 reviews</Text>
+                    </View>
+
+                    <Text style={styles.description}>
+                        Rio de Janeiro, often simply called Rio, is one of Brazil's most iconic cities, renowned for...
+                        <Text style={styles.readMore}> Read more</Text>
+                    </Text>
+
+                    <View style={styles.sectionHeader}>
+                        <Text style={styles.sectionTitle}>Upcoming tours</Text>
+                        <TouchableOpacity><Text style={styles.seeAll}>See all</Text></TouchableOpacity>
+                    </View>
+
+                    
+                    <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                        <TourCard
+                            image={require('../assets/images/sunset.jpg')}
+                            title="Iconic Brazil"
+                            price="$659/person"
+                            rating="4.6"
+                            onPress={() => navigation.navigate('Booking')} 
+                        />
+                        <TourCard
+                            image={require('../assets/images/airport.jpg')}
+                            title="Beach Paradise"
+                            price="$450/person"
+                            rating="4.8"
+                        />
+                    </ScrollView>
+                </ScrollView>
+            </View>
+        </View>
+    );
+};
+
+const TourCard = ({ image, title, price, rating, onPress }) => (
+    <TouchableOpacity style={styles.tourCard} onPress={onPress} activeOpacity={0.9}>
+        <Image source={image} style={styles.tourImg} />
+        <TouchableOpacity style={styles.tourHeart}><Icon name="heart" size={16} color={Colors.black} /></TouchableOpacity>
+        <View style={styles.tourInfo}>
+            <Text style={styles.tourTitle}>{title}</Text>
+            <Text style={styles.tourPrice}>8 days • from {price}</Text>
+            <View style={styles.tourFooter}>
+                <Icon name="star" size={12} color="#FFD700" />
+                <Text style={styles.tourRating}>{rating} (56 reviews)</Text>
+                <View style={styles.goBtn}><Icon name="arrow-right" size={16} color="#fff" /></View>
+            </View>
+        </View>
+    </TouchableOpacity>
+);
+
+const styles = StyleSheet.create({
+    container: { flex: 1, backgroundColor: '#fff' },
+    imageContainer: { height: 350, width: '100%' },
+    headerImage: { width: '100%', height: '100%' },
+    backBtn: { position: 'absolute', top: 50, left: 20, backgroundColor: '#fff', padding: 10, borderRadius: 25 },
+    heartBtn: { position: 'absolute', top: 50, right: 20, backgroundColor: '#fff', padding: 10, borderRadius: 25 },
+    contentCard: { flex: 1, marginTop: -30, backgroundColor: '#fff', borderTopLeftRadius: 40, borderTopRightRadius: 40, padding: 25 },
+    handle: { width: 40, height: 4, backgroundColor: '#E5E7EB', borderRadius: 2, alignSelf: 'center', marginBottom: 20 },
+    titleRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
+    cityTitle: { fontSize: 28, fontFamily: Fonts.bold, color: Colors.textPrimary },
+    ratingBox: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#F3F4F6', padding: 8, borderRadius: 12 },
+    locationRow: { flexDirection: 'row', alignItems: 'center', marginVertical: 10, gap: 5 },
+    countryText: { fontSize: 14, color: Colors.textSecondary },
+    reviewsText: { fontSize: 14, color: Colors.textSecondary, textDecorationLine: 'underline', marginLeft: 10 },
+    description: { fontSize: 15, color: Colors.textSecondary, lineHeight: 22, marginTop: 10 },
+    readMore: { color: Colors.textPrimary, fontWeight: 'bold' },
+    sectionHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 30, marginBottom: 15 },
+    sectionTitle: { fontSize: 20, fontFamily: Fonts.bold },
+    seeAll: { color: Colors.textSecondary },
+    tourCard: { width: 260, marginRight: 20, backgroundColor: '#fff', borderRadius: 30, padding: 10, borderWidth: 1, borderColor: '#F3F4F6' },
+    tourImg: { width: '100%', height: 160, borderRadius: 25 },
+    tourHeart: { position: 'absolute', top: 20, right: 20, backgroundColor: '#fff', padding: 8, borderRadius: 20 },
+    tourTitle: { fontSize: 16, fontWeight: 'bold', marginTop: 10 },
+    tourPrice: { fontSize: 12, color: Colors.textSecondary, marginVertical: 4 },
+    tourFooter: { flexDirection: 'row', alignItems: 'center', gap: 5 },
+    goBtn: { backgroundColor: Colors.black, padding: 10, borderRadius: 20, marginLeft: 'auto' }
+});
+
+export default TripDetailsScreen;
+</file>
+
+<file path="src/screens/TripHomeScreen.jsx">
+import React from 'react';
+import { View, Text, ScrollView, StyleSheet, TextInput ,Image} from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import Icon from 'react-native-vector-icons/Feather';
+import { globalStyles } from '../styles/globalStyles';
+import { Colors, Spacing, Fonts } from '../styles/tripTheme';
+import CategoryTabs from '../components/trip/CategoryTabs';
+import HeroCarousel from '../components/trip/HeroCarousel';
+
+
+const TripHomeScreen = () => {
+    return (
+        <SafeAreaView style={globalStyles.safeArea}>
+            <ScrollView contentContainerStyle={[globalStyles.container, { paddingBottom: 100 }]}>
+                <View style={styles.header}>
+                    <View>
+                        <Text style={styles.welcomeText}>Hello, Vanessa</Text>
+                        <Text style={styles.subText}>Welcome to TripGlide</Text>
+                    </View>
+                    <Image
+                        source={require('../assets/images/avatar.webp')}
+                        style={styles.avatar}
+                    />
+                </View>
+
+                <View style={styles.searchBox}>
+                    <Icon name="search" size={22} color={Colors.textSecondary} />
+                    <TextInput
+                        placeholder="Search"
+                        style={styles.input}
+                        placeholderTextColor={Colors.textSecondary}
+                    />
+                    <View style={styles.filterIcon}>
+                        <Icon name="sliders" size={20} color={Colors.white} />
+                    </View>
+                </View>
+
+                <Text style={styles.sectionTitle}>Select your next trip</Text>
+                <CategoryTabs />
+                <View style={styles.carouselWrapper}>
+                    <HeroCarousel />
+                </View>
+            </ScrollView>
+
+            <View style={styles.navBar}>
+                <View style={styles.activeNavCircle}>
+                    <Icon name="home" size={22} color={Colors.black} />
+                </View>
+                <Icon name="grid" size={24} color={Colors.textSecondary} />
+                <Icon name="heart" size={24} color={Colors.textSecondary} />
+                <Icon name="user" size={24} color={Colors.textSecondary} />
+            </View>
+        </SafeAreaView>
+    );
+};
+
+const styles = StyleSheet.create({
+    header: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        paddingHorizontal: Spacing.m,
+    },
+    welcomeText: { fontSize: 24, fontFamily: Fonts.bold, color: Colors.textPrimary },
+    subText: { fontSize: 14, fontFamily: Fonts.regular, color: Colors.textSecondary },
+    avatar: { width: 55, height: 55, borderRadius: 27.5 },
+
+    searchBox: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        backgroundColor: Colors.white,
+        paddingHorizontal: 20,
+        height: 60, 
+        borderRadius: 35,
+        marginTop: Spacing.l,
+        marginHorizontal: Spacing.m,
+        ...globalStyles.shadow
+    },
+    input: { flex: 1, fontSize: 16, marginLeft: 10, fontFamily: Fonts.regular },
+    filterIcon: { backgroundColor: Colors.black, padding: 10, borderRadius: 20 },
+
+    sectionTitle: {
+    fontSize: 24,
+    fontFamily: Fonts.bold,
+    textAlign: 'left',
+    marginTop: Spacing.l,
+    marginLeft: Spacing.m,
+    color: Colors.textPrimary,
+},
+
+    navBar: {
+        position: 'absolute',
+        bottom: 30, left: 30, right: 30,
+        height: 75,
+        backgroundColor: Colors.black,
+        borderRadius: 40,
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        alignItems: 'center',
+        paddingHorizontal: 10
+    },
+    activeNavCircle: {
+        backgroundColor: '#fff',
+        width: 50,
+        height: 50,
+        borderRadius: 25,
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    carouselWrapper: {
+        marginTop: Spacing.l,
+        marginHorizontal: -Spacing.m,
+    },
+
+});
+
+export default TripHomeScreen;
+</file>
+
+<file path="src/styles/tripTheme.js">
+import { Colors as GlobalColors, Spacing as GlobalSpacing, Fonts as GlobalFonts } from './globalStyles';
+
+export const Colors = {
+  ...GlobalColors,
+  black: '#000000',
+};
+
+export const Spacing = GlobalSpacing;
+
+export const Fonts = GlobalFonts;
+</file>
 
 <file path="__tests__/App.test.tsx">
 /**
@@ -2460,7 +3230,9 @@ dependencies {
         implementation jscFlavor
     }
 }
-
+project.ext.vectoricons = [
+    iconFontNames: [ 'Feather.ttf' ]
+]
 apply from: "../../node_modules/react-native-vector-icons/fonts.gradle"
 </file>
 
@@ -3389,235 +4161,6 @@ const styles = StyleSheet.create({
 export default GroupsScreen;
 </file>
 
-<file path=".gitignore">
-# OSX
-#
-.DS_Store
-
-# Xcode
-#
-build/
-*.pbxuser
-!default.pbxuser
-*.mode1v3
-!default.mode1v3
-*.mode2v3
-!default.mode2v3
-*.perspectivev3
-!default.perspectivev3
-xcuserdata
-*.xccheckout
-*.moved-aside
-DerivedData
-*.hmap
-*.ipa
-*.xcuserstate
-**/.xcode.env.local
-
-# Android/IntelliJ
-#
-build/
-.idea
-.gradle
-local.properties
-*.iml
-*.hprof
-.cxx/
-*.keystore
-!debug.keystore
-.kotlin/
-
-# node.js
-#
-node_modules/
-npm-debug.log
-yarn-error.log
-
-# fastlane
-#
-# It is recommended to not store the screenshots in the git repo. Instead, use fastlane to re-generate the
-# screenshots whenever they are needed.
-# For more information about the recommended setup visit:
-# https://docs.fastlane.tools/best-practices/source-control/
-
-**/fastlane/report.xml
-**/fastlane/Preview.html
-**/fastlane/screenshots
-**/fastlane/test_output
-
-# Bundle artifact
-*.jsbundle
-
-# Ruby / CocoaPods
-**/Pods/
-/vendor/bundle/
-
-# Temporary files created by Metro to check the health of the file watcher
-.metro-health-check*
-
-# testing
-/coverage
-
-# Yarn
-.yarn/*
-!.yarn/patches
-!.yarn/plugins
-!.yarn/releases
-!.yarn/sdks
-!.yarn/versions
-
-# Repomix
-repomix/
-repomix-output/
-repomix.json
-repomix.lock
-</file>
-
-<file path="babel.config.js">
-module.exports = {
-  presets: ['module:@react-native/babel-preset'],
-  plugins: [
-    'react-native-reanimated/plugin', 
-  ],
-};
-</file>
-
-<file path="src/screens/auth/LoginScreen.jsx">
-import React , {useState}from "react"
-import { SafeAreaView } from "react-native-safe-area-context";
-import {View , Text  , StyleSheet ,Pressable ,TouchableOpacity,ScrollView } from "react-native"
-import {globalStyles , Colors} from "../../styles/globalStyles"
-import CustomInput from "../../components/CustomInput";
-import CustomButton from "../../components/CustomButton";
-import AuthFooter from "../../components/AuthFooter";
-import {MailIcon, LockIcon, ArrowLeftIcon } from "../../components/Icons";
-
-
-
-const LoginScreen = ({navigation }) => {
-    const [isChecked, setIsChecked] = useState(false);
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-
-    const handleLogin = () => {
-        navigation.reset({
-        index: 0,
-        routes: [{ name: 'MainApp' }],
-    });
-    };
-
-    const renderHeader = () => {
-        return (
-            <View style={globalStyles.header}>
-                <TouchableOpacity>
-                    <ArrowLeftIcon />
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => navigation.navigate('CarouselTest')}>
-                    <Text style={{ color: Colors.primary }}>TEST CAROUSEL</Text>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => navigation.navigate('DataGrid')}>
-                    <Text style={{color:Colors.primary}}>TEST GRID</Text>
-                </TouchableOpacity>
-            </View>
-
-        )
-
-    }
-
-
-    const renderContent = () => {
-        return (
-            <View>
-                <Text style={globalStyles.title}>Log in</Text>
-                <Text style={globalStyles.subtitle}>Enter your email and password to securely access your account and manage your services</Text>
-                <View style={globalStyles.form}>
-                    {/* inputs*/}
-                    <CustomInput icon={<MailIcon />} placeholder="Email Address" isPassword={false} value={email} setValue={setEmail} />
-                    <CustomInput icon={<LockIcon />} placeholder="Password" isPassword={true} value={password} setValue={setPassword} />
-
-                    {/*checkbox*/}
-                    <View style={styles.row}>
-                        <Pressable
-                            style={styles.rememberMe}
-                            onPress={() => setIsChecked(!isChecked)}
-                        >
-                            <View style={[styles.checkbox, isChecked && styles.checkboxChecked]} />
-                            <Text style={styles.rememberText}>Remember me</Text>
-                        </Pressable>
-                        <TouchableOpacity>
-                            <Text style={styles.forgot}>Forgot Password?</Text>
-                        </TouchableOpacity>
-                    </View>
-
-                    <CustomButton title="Login" onPress={handleLogin} />
-
-                </View>
-            </View>
-        )
-    }
-
-    const renderFooter = () => {
-        return(
-            <AuthFooter
-                        message="Dont have an account?"
-                        actionText="Sign Up here"
-                        onActionPress={() => navigation.navigate('Signup')}
-            />
-        )
-    }
-    return (
-        <SafeAreaView style={globalStyles.safeArea} edges={["top","left","right"]}>
-            <ScrollView contentContainerStyle={globalStyles.container}>
-                {renderHeader()}
-                {renderContent()}
-                {renderFooter()}
-            </ScrollView>     
-        </SafeAreaView>
-    )
-
-    }
-
-export const styles = StyleSheet.create({    
-    row: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        marginBottom: 24,
-    },
-    rememberMe: {
-        flexDirection: 'row',
-        alignItems: 'center',
-    },
-    checkbox: {
-        width: 20,
-        height: 20,
-        borderWidth: 1,
-        borderColor: Colors.border,
-        borderRadius: 4,
-        marginRight: 8,
-        backgroundColor: Colors.white,
-    },
-    checkboxChecked: {
-        backgroundColor: Colors.primary, 
-        borderColor: Colors.primary,
-    },
-    rememberText: {
-        color: '#374151',
-        fontSize: 14,
-    },
-    forgot: {
-        fontWeight: '600',
-        color: Colors.textPrimary,
-        fontSize: 14,
-    },
-    
-});
-
-
-
-export default LoginScreen;
-</file>
-
 <file path="src/screens/DataGrid.jsx">
 import React, { useState, useEffect, useCallback } from "react";
 import {
@@ -3810,6 +4353,92 @@ const styles = StyleSheet.create({
 export default DataGrid;
 </file>
 
+<file path=".gitignore">
+# OSX
+#
+.DS_Store
+
+# Xcode
+#
+build/
+*.pbxuser
+!default.pbxuser
+*.mode1v3
+!default.mode1v3
+*.mode2v3
+!default.mode2v3
+*.perspectivev3
+!default.perspectivev3
+xcuserdata
+*.xccheckout
+*.moved-aside
+DerivedData
+*.hmap
+*.ipa
+*.xcuserstate
+**/.xcode.env.local
+
+# Android/IntelliJ
+#
+build/
+.idea
+.gradle
+local.properties
+*.iml
+*.hprof
+.cxx/
+*.keystore
+!debug.keystore
+.kotlin/
+
+# node.js
+#
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# fastlane
+#
+# It is recommended to not store the screenshots in the git repo. Instead, use fastlane to re-generate the
+# screenshots whenever they are needed.
+# For more information about the recommended setup visit:
+# https://docs.fastlane.tools/best-practices/source-control/
+
+**/fastlane/report.xml
+**/fastlane/Preview.html
+**/fastlane/screenshots
+**/fastlane/test_output
+
+# Bundle artifact
+*.jsbundle
+
+# Ruby / CocoaPods
+**/Pods/
+/vendor/bundle/
+
+# Temporary files created by Metro to check the health of the file watcher
+.metro-health-check*
+
+# testing
+/coverage
+
+# Yarn
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
+
+# Repomix
+repomix/
+repomix-output/
+repomix.json
+repomix.lock
+
+.env
+</file>
+
 <file path="App.jsx">
 import React from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
@@ -3832,6 +4461,19 @@ function App() {
 export default App;
 </file>
 
+<file path="babel.config.js">
+module.exports = {
+  presets: ['module:@react-native/babel-preset'],
+  plugins: [
+    'react-native-reanimated/plugin', 
+    ['module:react-native-dotenv', {
+      "moduleName": "@env",
+      "path": ".env",
+    }]
+  ],
+};
+</file>
+
 <file path="tsconfig.json">
 {
   "extends": "@react-native/typescript-config",
@@ -3843,13 +4485,219 @@ export default App;
 }
 </file>
 
+<file path="src/screens/auth/LoginScreen.jsx">
+import React, { useState ,useEffect } from "react"
+import { SafeAreaView } from "react-native-safe-area-context";
+import { View, Text, StyleSheet, Pressable, TouchableOpacity, ScrollView } from "react-native"
+import { globalStyles, Colors } from "../../styles/globalStyles"
+import CustomInput from "../../components/CustomInput";
+import CustomButton from "../../components/CustomButton";
+import AuthFooter from "../../components/AuthFooter";
+import { MailIcon, LockIcon, ArrowLeftIcon } from "../../components/Icons";
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Alert } from 'react-native';
+import { API_URL } from '@env';
+
+
+
+const LoginScreen = ({ navigation }) => {
+    const [isChecked, setIsChecked] = useState(false);
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [loading, setLoading] = useState(false);
+
+    useEffect(() => {
+        const loadSavedEmail = async () => {
+            try {
+                const savedEmail = await AsyncStorage.getItem('savedEmail');
+                if (savedEmail) {
+                    setEmail(savedEmail);
+                    setIsChecked(true);
+                }
+            } catch (error) {
+                console.error("Error loading saved email:", error);
+            }
+        };
+        loadSavedEmail();
+    }, []);
+
+    const handleLogin = async () => {
+        if (!email || !password) {
+            Alert.alert("Error", "Please fill in all fields");
+            return;
+        }
+
+        setLoading(true);
+        try {
+            const response = await axios.post(`${API_URL}/user/log-in/`, {
+                method: "email",
+                action: "generate",
+                email: email,
+                password: password
+            });
+
+            console.log(response.data)
+            const token = response.data.token || response.data?.data?.tokens?.access;
+
+            if (token) {
+                await AsyncStorage.setItem('userToken', token);
+                navigation.reset({
+                    index: 0,
+                    routes: [{ name: 'MainApp' }],
+                });
+            } else {
+                console.log("Full Error Object:", error); // View this in your terminal
+                console.log("Server Response Data:", error.response?.data);
+                Alert.alert("Error", error.response?.data?.message || "Something went wrong");
+            }
+        } catch (err) {
+            console.log("Login Error Details:", err.response?.data || err.message);
+            Alert.alert(
+                "Error",
+                err.response?.data?.message || "Check your internet connection"
+            );
+        } finally {
+            setLoading(false);
+        }
+    };
+
+
+    const renderHeader = () => {
+        return (
+            <View style={globalStyles.header}>
+                <TouchableOpacity onPress={() => navigation.goBack()}>
+                    <ArrowLeftIcon />
+                </TouchableOpacity>
+                {/* <TouchableOpacity onPress={() => navigation.navigate('CarouselTest')}>
+                <Text style={{ color: Colors.primary }}>TEST CAROUSEL</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => navigation.navigate('DataGrid')}>
+                <Text style={{ color: Colors.primary }}>TEST GRID</Text>
+            </TouchableOpacity> */}
+                <TouchableOpacity 
+                    style={{backgroundColor: Colors.primaryLight, padding: 8, borderRadius: 10}}
+                    onPress={() => navigation.navigate('TripGlide')}
+                >
+                    <Text style={{color: Colors.primary, fontSize: 10, fontWeight: 'bold'}}>TEST TRIP APP</Text>
+                </TouchableOpacity>
+            </View>
+
+        )
+
+    }
+
+
+    const renderContent = () => {
+        return (
+            <View>
+                <Text style={globalStyles.title}>Log in</Text>
+                <Text style={globalStyles.subtitle}>Enter your email and password to securely access your account and manage your services</Text>
+                <View style={globalStyles.form}>
+                    {/* inputs*/}
+                    <CustomInput icon={<MailIcon />} placeholder="Email Address" isPassword={false} value={email} setValue={setEmail} />
+                    <CustomInput icon={<LockIcon />} placeholder="Password" isPassword={true} value={password} setValue={setPassword} />
+
+                    {/*checkbox*/}
+                    <View style={styles.row}>
+                        <Pressable
+                            style={styles.rememberMe}
+                            onPress={() => setIsChecked(!isChecked)}
+                        >
+                            <View style={[styles.checkbox, isChecked && styles.checkboxChecked]} />
+                            <Text style={styles.rememberText}>Remember me</Text>
+                        </Pressable>
+                        <TouchableOpacity>
+                            <Text style={styles.forgot}>Forgot Password?</Text>
+                        </TouchableOpacity>
+                    </View>
+
+                    <CustomButton 
+                        title={loading ? "Logging in..." : "Login"} 
+                        onPress={handleLogin} 
+                        disabled={loading}
+                    />
+
+                </View>
+            </View>
+        )
+    }
+
+    const renderFooter = () => {
+        return (
+            <AuthFooter
+                message="Dont have an account?"
+                actionText="Sign Up here"
+                onActionPress={() => navigation.navigate('Signup')}
+            />
+        )
+    }
+    return (
+        <SafeAreaView style={globalStyles.safeArea} edges={["top", "left", "right"]}>
+            <ScrollView
+                contentContainerStyle={globalStyles.container}
+                keyboardShouldPersistTaps="handled"
+            >
+                {renderHeader()}
+                {renderContent()}
+                {renderFooter()}
+            </ScrollView>
+        </SafeAreaView>
+    )
+
+}
+
+
+
+export const styles = StyleSheet.create({
+    row: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: 24,
+    },
+    rememberMe: {
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    checkbox: {
+        width: 20,
+        height: 20,
+        borderWidth: 1,
+        borderColor: Colors.border,
+        borderRadius: 4,
+        marginRight: 8,
+        backgroundColor: Colors.white,
+    },
+    checkboxChecked: {
+        backgroundColor: Colors.primary,
+        borderColor: Colors.primary,
+    },
+    rememberText: {
+        color: '#374151',
+        fontSize: 14,
+    },
+    forgot: {
+        fontWeight: '600',
+        color: Colors.textPrimary,
+        fontSize: 14,
+    },
+
+});
+
+
+
+export default LoginScreen;
+</file>
+
 <file path="src/navigation/AppNavigator.jsx">
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { View } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 import { Colors } from '../styles/globalStyles';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { ActivityIndicator , View} from 'react-native';
 
 import LoginScreen from '../screens/auth/LoginScreen';
 import SignupScreen from '../screens/auth/SignupScreen';
@@ -3858,6 +4706,9 @@ import EnergyScreen from '../screens/home/EnergyScreen';
 import CarouselTestScreen from '../screens/CarouselTestScreen';
 import DeviceControlScreen from '../screens/home/DeviceControlScreen';
 import DirectoryNavigator from './DirectoryNavigation'
+import TripHomeScreen from '../screens/TripHomeScreen';
+import TripDetailsScreen from '../screens/TripDetailsScreen';
+import BookingScreen from '../screens/BookingScreen';
 
 const Placeholder = () => <View style={{flex:1, backgroundColor: Colors.background}} />;
 
@@ -3912,7 +4763,7 @@ function HomeTabs() {
                     alignItems: 'center', justifyContent: 'center',
                     marginBottom: 0, elevation: 5 
                 }}>
-                    <Icon name="plus" size={24} color="#fff" />
+                    <Icon name="plus" size={24} color={Colors.white} />
                 </View>
             )
         }}
@@ -3937,8 +4788,32 @@ function HomeTabs() {
 
 
 export default function AppNavigator() {
+  const [isLoading, setIsLoading] = useState(true);
+  const [userToken, setUserToken] = useState(null);
+
+  useEffect(() => {
+    const checkToken = async () => {
+      try {
+        const token = await AsyncStorage.getItem('userToken');
+        setUserToken(token);
+      } catch (e) {
+        console.log("Failed to load token");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    checkToken();
+  }, []);
+
+  if (isLoading) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <ActivityIndicator size="large" color={Colors.primary} />
+      </View>
+    );
+  }
   return (
-    <Stack.Navigator initialRouteName="Login" screenOptions={{ headerShown: false }}>
+    <Stack.Navigator initialRouteName={userToken ? "MainApp" : "Login"} screenOptions={{ headerShown: false }}>
       {/* Auth Flow */}
       <Stack.Screen name="Login" component={LoginScreen} />
       <Stack.Screen name="Signup" component={SignupScreen} />
@@ -3950,6 +4825,9 @@ export default function AppNavigator() {
       <Stack.Screen name="CarouselTest" component={CarouselTestScreen} />
       
       <Stack.Screen name="DataGrid" component={DirectoryNavigator}/>
+      <Stack.Screen name="TripGlide" component={TripHomeScreen} />
+      <Stack.Screen name="TripDetails" component={TripDetailsScreen} />
+      <Stack.Screen name="Booking" component={BookingScreen} />
     </Stack.Navigator>
   );
 }
@@ -4189,6 +5067,7 @@ export default DeviceControlScreen;
     "test": "jest"
   },
   "dependencies": {
+    "@react-native-async-storage/async-storage": "^2.2.0",
     "@react-native-community/checkbox": "^0.5.20",
     "@react-native/new-app-screen": "0.83.1",
     "@react-navigation/bottom-tabs": "^7.10.1",
@@ -4200,6 +5079,7 @@ export default DeviceControlScreen;
     "react": "19.2.0",
     "react-native": "0.83.1",
     "react-native-circular-slider": "^1.0.1",
+    "react-native-dotenv": "^3.4.11",
     "react-native-gifted-charts": "^1.4.70",
     "react-native-linear-gradient": "^2.8.3",
     "react-native-pager-view": "^8.0.0",

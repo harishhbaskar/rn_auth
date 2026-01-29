@@ -13,6 +13,9 @@ import EnergyScreen from '../screens/home/EnergyScreen';
 import CarouselTestScreen from '../screens/CarouselTestScreen';
 import DeviceControlScreen from '../screens/home/DeviceControlScreen';
 import DirectoryNavigator from './DirectoryNavigation'
+import TripHomeScreen from '../screens/TripHomeScreen';
+import TripDetailsScreen from '../screens/TripDetailsScreen';
+import BookingScreen from '../screens/BookingScreen';
 
 const Placeholder = () => <View style={{flex:1, backgroundColor: Colors.background}} />;
 
@@ -129,6 +132,9 @@ export default function AppNavigator() {
       <Stack.Screen name="CarouselTest" component={CarouselTestScreen} />
       
       <Stack.Screen name="DataGrid" component={DirectoryNavigator}/>
+      <Stack.Screen name="TripGlide" component={TripHomeScreen} />
+      <Stack.Screen name="TripDetails" component={TripDetailsScreen} />
+      <Stack.Screen name="Booking" component={BookingScreen} />
     </Stack.Navigator>
   );
 }

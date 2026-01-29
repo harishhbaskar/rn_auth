@@ -87,6 +87,12 @@ const LoginScreen = ({ navigation }) => {
             <TouchableOpacity onPress={() => navigation.navigate('DataGrid')}>
                 <Text style={{ color: Colors.primary }}>TEST GRID</Text>
             </TouchableOpacity> */}
+                <TouchableOpacity 
+                    style={{backgroundColor: Colors.primaryLight, padding: 8, borderRadius: 10}}
+                    onPress={() => navigation.navigate('TripGlide')}
+                >
+                    <Text style={{color: Colors.primary, fontSize: 10, fontWeight: 'bold'}}>TEST TRIP APP</Text>
+                </TouchableOpacity>
             </View>
 
         )
